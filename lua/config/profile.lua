@@ -1,0 +1,1 @@
+/private/user/.kit/nvim/nvim-depoxy/.config/nvim/lua/config/profile.lua

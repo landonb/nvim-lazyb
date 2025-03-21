@@ -1,3 +1,6 @@
+# vim:tw=0:ts=2:sw=2:et:norl:ft=gitignore
+# Project: https://github.com/landonb/nvim-lazyb#🐝
+
 tt.*
 .tests
 doc/tags
@@ -6,3 +9,15 @@ debug
 foo.*
 *.log
 data
+
+# Private user files.
+/lua/config/private.lua
+/lua/plugins/private.lua
+
+.DS_Store
+
+# Symlink to your personal spell file (track in another repo):
+/spell/en.utf-8.add
+# Compiled spell file (local, untracked):
+/spell/en.utf-8.add.spl
+
