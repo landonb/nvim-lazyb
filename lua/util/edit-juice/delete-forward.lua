@@ -76,7 +76,7 @@ function M.Del2EndOfWsAz09OrPunct(deleteToEndOfLine)
   local mode = vim.api.nvim_get_mode().mode:sub(1, 1)
   local curs_col = vim.fn.virtcol(".")
   local orig_line = vim.fn.getline(".")
-  M.DeleteForwardLogically(mode, curs_col, deleteToEndOfLine)
+  M.DeleteForwardLogically(deleteToEndOfLine, mode, curs_col, orig_line)
   M.FixCursorIfAtEndOfLine(curs_col, orig_line)
   -- Hide the completion menu, otherwise user might delete word
   -- after ghost test, which makes it more difficult to see the
@@ -88,10 +88,17 @@ end
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-function M.DeleteForwardLogically(mode, curs_col, deleteToEndOfLine)
+function M.DeleteForwardLogically(deleteToEndOfLine, mode, curs_col, orig_line)
   local curr_col = vim.fn.col(".")
   local line_len_plus_one = vim.fn.col("$")
   local last_col = vim.fn.virtcol("$")
+
+  if deleteToEndOfLine == 0 and orig_line == "" then
+    vim.cmd([[normal! "_dd]])
+    M.trace_vars("dd-deleted line", mode, curs_col, curr_col, line_len_plus_one, last_col)
+
+    return
+  end
 
   if deleteToEndOfLine == 0 and curr_col == line_len_plus_one then
     -- Use case: Cursor is at the end of the line, so at least delete
