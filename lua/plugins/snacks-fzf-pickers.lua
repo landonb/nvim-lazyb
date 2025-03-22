@@ -246,7 +246,7 @@ return {
             },
           })
         end,
-        desc = "Find Files (user home)",
+        desc = "Snacks User Home",
       },
     },
   },
