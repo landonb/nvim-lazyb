@@ -175,17 +175,20 @@ function M.DeleteForwardWord()
   --   at beginning of word boundary;
   --   at end of word boundary but not end of line (otherwise the final word
   --     is not fully deleted, but the final character remains undeleted); or
+  --       also includes whitespace after the word boundary,
+  --       assuming you want to delete up the start of the
+  --       next non-whitespace character; or
   --   a block of whitespace, but also not ending before a newline,
   --     for the same reason given previously.
   -- stylua: ignore
   vim.fn.setreg("/", ""
     .. "\\(\\_^\\zs"
     .. "\\|\\<\\zs"
-    .. "\\|\\>\\zs[^\\n]"
+    .. "\\|\\>\\s*\\zs[^\\n]"
     .. "\\|\\s\\+\\zs\\S"
     .. "\\)")
   -- Here's the same on one line, for easy copy-paste, or ::<CR>.
-  --  let @/ = "\\(\\_^\\zs\\|\\<\\zs\\|\\>\\zs[^\\n]\\|\\s\\+\\zs\\S\\)"
+  --  let @/ = "\\(\\_^\\zs\\|\\<\\zs\\|\\>\\s*\\zs[^\\n]\\|\\s\\+\\zs\\S\\)"
   vim.cmd([[normal! "_dn]])
   vim.fn.setreg("/", last_pttrn)
   vim.cmd.nohlsearch()
