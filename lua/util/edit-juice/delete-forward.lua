@@ -171,10 +171,12 @@ end
 function M.DeleteForwardWord()
   local last_pttrn = vim.fn.getreg("/")
   -- Match:
-  --   at beginning of line;
+  --   at beginning of line, to stop after deleting a newline
+  --     (and not to keep deleting newlines and whitespace);
   --   at beginning of word boundary;
-  --   at end of word boundary but not end of line (otherwise the final word
-  --     is not fully deleted, but the final character remains undeleted); or
+  --   at end of word boundary, but not if word boundary is the end of
+  --     the line (otherwise the final word is not fully deleted, but
+  --     the final character remains undeleted);
   --       also includes whitespace after the word boundary,
   --       assuming you want to delete up the start of the
   --       next non-whitespace character; or
@@ -189,6 +191,11 @@ function M.DeleteForwardWord()
     .. "\\)")
   -- Here's the same on one line, for easy copy-paste, or ::<CR>.
   --  let @/ = "\\(\\_^\\zs\\|\\<\\zs\\|\\>\\s*\\zs[^\\n]\\|\\s\\+\\zs\\S\\)"
+  -- Or as individually-testable components
+  --  let @/ = "\\_^\\zs"
+  --  let @/ = "\\<\\zs"
+  --  let @/ = "\\>\\s*\\zs[^\\n]"
+  --  let @/ = "\\s\\+\\zs\\S"
   vim.cmd([[normal! "_dn]])
   vim.fn.setreg("/", last_pttrn)
   vim.cmd.nohlsearch()
