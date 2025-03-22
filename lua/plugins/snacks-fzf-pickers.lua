@@ -182,8 +182,26 @@ return {
           Snacks.picker.files({
             cwd = "~",
 
-            -- REFER: exclude translates to a glob arg. pair, e.g.,
+            -- REFER: Each 'exclude' string translates to a glob arg. pair, e.g.,
             --   rg ... -g !.DS_Store
+
+            -- ASIDE: I had a symlink in a subdirectory to ~/.Trash,
+            -- but because ACL permissions (I assume), `rg` exits 2,
+            -- and I was unable to ignore the symlink.
+            -- - The setup is like this, e.g.:
+            --      $ ln -sfn ~/.trash ~/projects/.trash
+            --      $ ls ~/projects/.trash
+            --      gls: cannot open directory '.../.trash/': Operation not permitted
+            -- - But neither `rg -g .trash` nor adding .trash to .ignore files worked,
+            --   Snacks would finish populating results, and then it would notify that
+            --   rg failed.
+            --   - Anyway, I changed that symlink to use an intermediate trash, ~/.trash0,
+            --     that's not under macOS control. But just FYI if you encounter an exit 2.
+            --     I also didn't see anythink related to permissions or '.trash' in either
+            --     227MB worth of `rg --debug` or `rg --trace` output (though maybe you
+            --     would if you remove the `rg --files` option, I've seen that inhibit
+            --     useful errors, like broken symlinks).
+
             -- FIXME: Add .DS_Store to Homefries rg alias, and retest match count (this might be diff)
             exclude = { ".DS_Store" },
 
