@@ -93,7 +93,7 @@ function M.DeleteForwardLogically(mode, curs_col, deleteToEndOfLine)
   local line_len_plus_one = vim.fn.col("$")
   local last_col = vim.fn.virtcol("$")
 
-  if curr_col == line_len_plus_one then
+  if deleteToEndOfLine == 0 and curr_col == line_len_plus_one then
     -- Use case: Cursor is at the end of the line, so at least delete
     -- the newline... and might as well Join (delete-forward normally
     -- gobbles whitespace, so we should gobble newline and leading
