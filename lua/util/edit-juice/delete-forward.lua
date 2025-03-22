@@ -125,7 +125,7 @@ function M.DeleteForwardLogically(deleteToEndOfLine, mode, curs_col, orig_line)
   end
 
   if deleteToEndOfLine == 1 then
-    vim.cmd([[normal! d$]])
+    vim.cmd([[normal! "_d$]])
     M.trace_vars("d$-deleted to EOL", mode, curs_col, curr_col, line_len_plus_one, last_col)
 
     return
