@@ -175,24 +175,17 @@ function M.DeleteForwardWord()
   --   at beginning of word boundary;
   --   at end of word boundary but not end of line (otherwise the final word
   --     is not fully deleted, but the final character remains undeleted); or
-  --   ~~after whitespace.~~
-  -- - HSTRY/2025-03-18: Removed the whitespace component:
-  --     .. "\\|\\s\\+\\zs"
-  --   Because it leaves one space if you delete from cursor to EOL, and if
-  --   cursor to EOL is only spaces (and I don't think this breaks anything
-  --   else; but this pattern and changes herein are so far removed from
-  --   the original implementation that I'm unsure what use case the
-  --   whitespace match was specifically checking for...).
-  -- stylua: ignore    
+  --   a block of whitespace, but also not ending before a newline,
+  --     for the same reason given previously.
+  -- stylua: ignore
   vim.fn.setreg("/", ""
     .. "\\(\\_^\\zs"
     .. "\\|\\<\\zs"
     .. "\\|\\>\\zs[^\\n]"
+    .. "\\|\\s\\+\\zs\\S"
     .. "\\)")
   -- Here's the same on one line, for easy copy-paste, or ::<CR>.
-  --  " " HSTRY/2025-03-18: Here's the old pattern, incl. whitespace match:
-  --  " let @/ = "\\(\\_^\\zs\\|\\<\\zs\\|\\>\\zs[^\\n]\\|\\s\\+\\zs\\)"
-  --  let @/ = "\\(\\_^\\zs\\|\\<\\zs\\|\\>\\zs[^\\n]\\)"
+  --  let @/ = "\\(\\_^\\zs\\|\\<\\zs\\|\\>\\zs[^\\n]\\|\\s\\+\\zs\\S\\)"
   vim.cmd([[normal! "_dn]])
   vim.fn.setreg("/", last_pttrn)
   vim.cmd.nohlsearch()
