@@ -110,7 +110,7 @@ function M.DeleteForwardLogically(deleteToEndOfLine, mode, curs_col, orig_line)
     --     vim.fn.getline("."):len() == 0
     --   (in which case vim.fn.col(".") == vim.fn.col("$") == 1)
     vim.cmd([[normal! J]])
-    M.trace_vars("J joined from EOL", mode, curs_col, curr_col, line_len_plus_one, last_col)
+    M.trace_vars("J-joined from EOL", mode, curs_col, curr_col, line_len_plus_one, last_col)
 
     return
   end
@@ -119,14 +119,14 @@ function M.DeleteForwardLogically(deleteToEndOfLine, mode, curs_col, orig_line)
     -- Use case: Cursor is in the penultimate column. Just delete
     -- the last character (and later we'll fix the cursor pos.).
     vim.cmd([[normal! "_x]])
-    M.trace_vars('"_x deleted final char', mode, curs_col, curr_col, line_len_plus_one, last_col)
+    M.trace_vars("x-deleted final char", mode, curs_col, curr_col, line_len_plus_one, last_col)
 
     return
   end
 
   if deleteToEndOfLine == 1 then
     vim.cmd([[normal! d$]])
-    M.trace_vars("d$ deleted to EOL", mode, curs_col, curr_col, line_len_plus_one, last_col)
+    M.trace_vars("d$-deleted to EOL", mode, curs_col, curr_col, line_len_plus_one, last_col)
 
     return
   end
