@@ -168,35 +168,106 @@ end
 --         So add a not-followed-by-newline [^\\n] check,
 --         and sprinkle the \zs sets-start-of-match appropriately,
 --         which lets us check not-newline without using a lookahead.
+
+--   Text and cursor|     DeleteForwardWord()
+--   ────────────────     ───────────────────
+--
+--   ^| .foo              ^|.foo
+--   ^|  .foo             ^|.foo
+--   |.foo-bar_baz        |foo-bar_baz
+--   |foo-bar_baz         |-bar_baz
+--   |-bar_baz            |bar_baz
+--   |bar_baz             |
+--   |foo", "bar          |", "bar
+--   |", "bar             |"bar
+--   |"bar                |bar
+--   |bar                 |
+--   |foo("/",            |("/",
+--   |("/",               |
+--   ---|    $            ---|
+--   ───|    $            ───|
+--   ✓✓✓|    $            ✓✓✓|
+--   .,)':~`|    $        .,)':~`|
+--   |.,)':~`    $        |$
+--
+-- TRYME:
+-- abc-def -abc- ../foo/bar/.. foo/bar/baz  ??what_foo-bar(baz;bat.qux)
+
 function M.DeleteForwardWord()
   local last_pttrn = vim.fn.getreg("/")
   -- Match:
-  --   at beginning of line, to stop after deleting a newline
-  --     (and not to keep deleting newlines and whitespace);
-  --   at beginning of word boundary;
-  --   at end of word boundary, but not if word boundary is the end of
-  --     the line (otherwise the final word is not fully deleted, but
-  --     the final character remains undeleted);
-  --       also includes whitespace after the word boundary,
+  --   at the beginning of a word boundary;
+  --   at the end of a word boundary (note if `normal! i\<C-O>dn` kludge not
+  --   used, if the word boundary is the end of the line, the final word
+  --   is not fully deleted, and the final character remains undeleted);
+  --     - also includes whitespace after the word boundary,
   --       assuming you want to delete up the start of the
-  --       next non-whitespace character; or
-  --   a block of whitespace, but also not ending before a newline,
-  --     for the same reason given previously.
+  --       next non-whitespace character;
+  --   leading whitespace; or match
+  --   at the end of the line.
+  --
   -- stylua: ignore
   vim.fn.setreg("/", ""
-    .. "\\(\\_^\\zs"
-    .. "\\|\\<\\zs"
-    .. "\\|\\>\\s*\\zs[^\\n]"
+    -- Stop delete at start of word boundary.
+    .. "\\(\\<"
+    -- Delete word and any trailing whitespace.
+    .. "\\|\\>\\s*\\zs\\S"
+    -- Delete leading whitespace.
     .. "\\|\\s\\+\\zs\\S"
-    .. "\\)")
+
+    -- Considering previous patterns, when there's only a single word on
+    -- the line, the cursor is at the start of the line, and the user
+    -- forward-deletes, it includes the newline, rather than leave the
+    -- user with an empty line.
+    -- - I found three approaches that each seem to work:
+    --    .. "\\|$"
+    --    .. "\\|\\zs$"
+    --    .. "\\|\\zs\\n"
+    -- - I also tried these other patterns, each of which does not have any
+    --   additional effect, such that forward-deleting from first column on
+    --   line with only a single word (still) also deletes the newline:
+    --   .. "\\|\\n\\zs"
+    --   .. "\\|\\_^\\zs"
+    -- Don't delete the newline.
+    .. "\\|$"
+
+    .. "\\)"
+  )
   -- Here's the same on one line, for easy copy-paste, or ::<CR>.
-  --  let @/ = "\\(\\_^\\zs\\|\\<\\zs\\|\\>\\s*\\zs[^\\n]\\|\\s\\+\\zs\\S\\)"
+  --  let @/ = "\\(\\_^\\zs\\|\\<\\zs\\|\\>\\s*\\zs[^\\n]\\|\\s\\+\\zs\\S\\|$\\)"
   -- Or as individually-testable components
   --  let @/ = "\\_^\\zs"
   --  let @/ = "\\<\\zs"
-  --  let @/ = "\\>\\s*\\zs[^\\n]"
+  --  let @/ = "\\>\\s*\\zs\\S"
   --  let @/ = "\\s\\+\\zs\\S"
-  vim.cmd([[normal! "_dn]])
+  --  let @/ = "\\|$"
+
+  -- KLUGE: Because a normal |dn| never deletes the last character
+  -- of a line.
+  --   - TRYME: You can see for yourself if you run the `let @/ =`
+  --     above, and then |dn| from Normal on this final word: word
+  --     - It'll leave the "d".
+  --   - Same thing if we run that command through |normal|:
+  --       vim.cmd([[normal! "_dn]])
+  -- - KLUGE: But if we run it through Insert mode, it works!
+  --   - Though it does move the cursor left one.
+  -- - WRKLG: This command mostly does what we want:
+  --     vim.cmd([[exec "normal! i\<C-O>\"_dn\<C-O>l"]])
+  --   - But it misses one corner case: if you forward-delete
+  --     the last two characters on a line, and there's a
+  --     boundary between the two, it'll delete the first
+  --     character, but then it'll move the cursor left on.
+  --   - E.g, put cursor left of "x!" and press <Ctrl-Del>: x!
+  --     - Compare that to forward-deleting these two chars: xx
+  --       (The "xx" example works b/c FixCursorIfAtEndOfLine.)
+  --   - Note that <Right> instead of <C-O>l works for the "x!"
+  --     example, but for the "xx" example, it'll (obviously)
+  --     move the cursor to the start of the next line:
+  --       vim.cmd([[exec "normal! i\<C-O>\"_dn\<Right>"]])
+  --   - Thankfully, calling a normal |normal l| appears to work.
+  vim.cmd([[exec "normal! i\<C-O>\"_dn"]])
+  vim.cmd([[normal! l]])
+
   vim.fn.setreg("/", last_pttrn)
   vim.cmd.nohlsearch()
   -- Clear the ghost text (extmark) user now sees after last column:
@@ -209,7 +280,7 @@ end
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
--- If we bopped outta insert mode to run the deletion and are returning
+-- If we bopped out of insert mode to run the deletion and are returning
 -- to insert mode, it's tricky to get the cursor back to where we want.
 -- - If we did not join lines and if we deleted everything from the
 --   cursor until the end of the line, the default Vim behaviour puts
@@ -260,8 +331,13 @@ function M.FixCursorIfAtEndOfLine(curs_col, orig_line)
     --   Fortuantely we can set_cursor instead.
     -- - ALTLY: Here's the equivalent-ish Vim call:
     --     vim.fn.cursor(0, vim.fn.col('.') + 1)
+    --   - Although don't use +1, e.g.,
+    --       vim.api.nvim_win_set_cursor(cur_win, {
+    --         vim.fn.line("."), vim.fn.col(".") + 1 })
+    --     which won't work if there are any wide chars. in the line
+    --     (the cursor ends up 1 or more left of the final column).
     local cur_win = 0
-    vim.api.nvim_win_set_cursor(cur_win, { vim.fn.line("."), vim.fn.col(".") + 1 })
+    vim.api.nvim_win_set_cursor(cur_win, { vim.fn.line("."), vim.fn.col("$") })
   end
 end
 
