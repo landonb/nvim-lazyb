@@ -1040,13 +1040,23 @@ wk.add({
 --   moving (e.g., <Shift-F1>) and then I'd |N| or <Shift-F3> to match
 --   backwards).
 --
--- This adds 'zz' to n and N — for non-centering matches, use <F3>/<S-F3>.
+-- We also add 'zz' to n and N to center matches — these complement the
+-- non-centering matches, <F3>/<S-F3>, from blinky-search.
+-- - Note we don't center when used as a selection or motion operator.
+--   - Also note this omap inserts 'zz' when used in Insert mode:
+--       map("o", "n", "'Nn'[v:searchforward].'zz'")
+--     E.g., if you run `i<C-O>dn` from Normal mode, it will delete
+--     forward word but then insert "zz".
+--   - Also this map extends the selection but doesn't center (though
+--     I'm unsure what happens to the zz, it's not inserted, either):
+--       map("x", "n", "'Nn'[v:searchforward].'zz'")
+
 map("n", "n", "'Nn'[v:searchforward].'zvzz'", { expr = true, desc = "Next Search Result" })
-map("x", "n", "'Nn'[v:searchforward].'zz'", { expr = true, desc = "Next Search Result" })
-map("o", "n", "'Nn'[v:searchforward].'zz'", { expr = true, desc = "Next Search Result" })
+map("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next Search Result" })
+map("o", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next Search Result" })
 map("n", "N", "'nN'[v:searchforward].'zvzz'", { expr = true, desc = "Prev Search Result" })
-map("x", "N", "'nN'[v:searchforward].'zz'", { expr = true, desc = "Prev Search Result" })
-map("o", "N", "'nN'[v:searchforward].'zz'", { expr = true, desc = "Prev Search Result" })
+map("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result" })
+map("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result" })
 
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
