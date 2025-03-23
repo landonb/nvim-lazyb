@@ -34,6 +34,17 @@
 -- which-key. E.g., check state, and fallback built-in <C-u> if which-key
 -- is active. But not a high priority, or any sort of priority; fudge it.
 
+-- FIXME- BUGGN: Cannot run register command via <C-O> from Insert mode — `<C-O>"`
+-- - LATER: PR this. / CXREF: See fix:
+--   ~/.local/share/nvim_lazyb/lazy/which-key.nvim/lua/which-key/state.lua
+--
+-- - UCASE: I cannot specify register via <C-O> command.
+--   - E.g., while testing a `let @/ = ` pattern, I could
+--     run <C-O>dn from Insert mode, but I could not run
+--     <C-O>"_dn — which-key would appear instead, after
+--     typing `"`, and then after `_`, it would literally
+--     insert `"_`.
+
 return {
   {
     "folke/which-key.nvim",
