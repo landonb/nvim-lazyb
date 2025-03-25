@@ -30,6 +30,7 @@ return {
         mode = { "n", "i" },
 
         -- <Ctrl-Cmd-Left|Up|Down|Right> navigation.
+        -- - By default, Normal <C-D-Left|Right> jumps WORDS; in Insert mode, words.
         { "<C-D-Left>", "<cmd>:TmuxNavigateLeft<CR>", desc = "Go to Left Window" },
         { "<C-D-Up>", "<cmd>:TmuxNavigateUp<CR>", desc = "Go to Upper Window" },
         { "<C-D-Down>", "<cmd>:TmuxNavigateDown<CR>", desc = "Go to Lower Window" },
