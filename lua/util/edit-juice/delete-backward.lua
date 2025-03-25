@@ -36,8 +36,22 @@ local M = {}
 --
 -- - Also note the special cases — cursor on empty line, cursor
 --   at line's end, previous line is blank, etc. Because quirks.
+--
+-- DUNNO: After Undo, note the cursor is put at the start of the
+-- restored word, not at the end of it like when you undo default
+-- <Ctrl-W>.
 
 function M.delete_back_word()
+  -- Without a new break, if you type something then delete it,
+  -- undo won't restore what you typed.
+  -- - Which is generally how default Vim works, where all text
+  --   inserted during Insert mode might be considered a single
+  --   undo block. Though I guess is default Vim maybe you'd
+  --   generally escape to Normal mode to delete text, thereby
+  --   creating a de facto undo block.
+  -- - TRACK/2025-03-24: Though beware quirks. For some reason
+  --   creating an undo block feels like a kludge.
+  require("util.edit-juice").undo_break()
   -- Mimic `db`, but behave different at end of line, and at beginning.
   local mode = vim.api.nvim_get_mode().mode:sub(1, 1)
   local curr_col = vim.fn.col(".")

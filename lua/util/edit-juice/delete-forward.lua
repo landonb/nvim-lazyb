@@ -73,6 +73,7 @@ end
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 function M.Del2EndOfWsAz09OrPunct(deleteToEndOfLine)
+  require("util.edit-juice").undo_break()
   local mode = vim.api.nvim_get_mode().mode:sub(1, 1)
   local curs_col = vim.fn.virtcol(".")
   local orig_line = vim.fn.getline(".")
