@@ -85,6 +85,9 @@ function M.delete_back_word()
         M.move_insert_cursor_to_end_of_line()
       end
     else
+      -- Inhibit |searchcount| messages, which Noice display as virtual text.
+      local restore_shm = vim.o.shortmess
+      vim.opt.shortmess:append("S")
       local last_pttrn = vim.fn.getreg("/")
 
       -- stylua: ignore
@@ -151,25 +154,8 @@ function M.delete_back_word()
         end
       end
       vim.fn.setreg("/", last_pttrn)
-      -- With Noice, even though we restore the search register (and
-      -- the user sees the same search matches highlighted), the
-      -- current line shows our setreg pattern from above as virtual
-      -- text at the end of the line, e.g.,
-      --         ...     ?\(\(\_^\|\<|\s\+\)\zs\|\>\)   [>99/>99]
-      -- Clearing the search highlight doesn't hide the virtual text:
-      --   vim.cmd.nohlsearch()
-      -- Nor does enabling search highlights for the restored "/" register:
-      --   if hlsearch == 1 then
-      --     vim.o.hlsearch = true
-      --   end
-      -- Nor does mimicking LazyVim <Esc> binding ("Escape and Clear hlsearch"):
-      --   vim.cmd("noh")
-      --   LazyVim.cmp.actions.snippet_stop()
-      -- KLUGE: But for some reason, emitting a space works (and thankfully
-      -- doesn't ellicit noice notification popup).
-      -- SPIKE: What's the api for clearning virtual text? Use that instead?
-      print(" ")
-      vim.cmd("nohlsearch")
+      vim.o.shortmess = restore_shm
+      vim.cmd.nohlsearch()
     end
   end
   -- Hide the completion menu, otherwise user might delete word after
