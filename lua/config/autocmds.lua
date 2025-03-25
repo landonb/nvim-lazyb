@@ -192,6 +192,26 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- "Disable" *Word that should start with a capital* check.
+-- - DUNNO: Does't seem to be a disablement option (doc/insert.txt
+--   via |spelling| doesn't mention), so disable capitalization
+--   check by resetting its highlight.
+-- - SPIKE: How do LazyVim and other plugins set highlights, or
+--   don't they, because I don't see any |highlight| calls in
+--   LazyVim sources. I also don't know of a Lua approach. Or
+--   maybe they're doing it through tree-sitter or something?
+--   I have no idea. =)
+-- - Default: Yellow undercurl.
+--     SpellCap cterm=undercurl gui=undercurl guisp=#f9e2af
+-- - WRONG: Makes the undercurl gray, not yellow, but still visible:
+--     vim.cmd("highlight! SpellCap guisp=None")
+-- - Reset 'gui' to remove undercurl.
+-- - ALTLY: If gui=None doesn't work in all circumstances, try link:
+--     vim.cmd("highlight! link SpellCap Normal")
+vim.cmd("highlight! SpellCap gui=None")
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- SAVVY: "Smart tabs" — for tabbed file, insert <Tab>s before first
 -- non-whitespace character, then use <Space>s after that character.
 -- - CXREF:
