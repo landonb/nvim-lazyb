@@ -40,20 +40,36 @@ return {
           filter = {
             event = "msg_show",
             any = {
+              -- CXREF: LazyVim defines just the first three rules:
+              --   ~/.local/share/nvim_lazyb/lazy/LazyVim/lua/lazyvim/plugins/ui.lua
+              -- REFER: A discussion of additional rules:
+              -- - *Reducing the noise from neovim messages*:
+              --   https://github.com/folke/noice.nvim/discussions/908#discussioncomment-10583586
+
+              -- E.g.,:
+              --   "~/.vim/pack/embrace-vim/start/....vim" 233L, 6289B written
+              --   "command_line_clock.vim" 528L, 20386B written
+              -- - ALTLY: { find = '^"[^"]\+" \d\+L, \d\+B written$' },
               { find = "%d+L, %d+B" },
+
+              -- E.g.:
+              --   1 change; before #15  1 second ago
+              --   1 more line; after #3  5 seconds ago
+              --   1 line less; before #33  1 second ago
+              -- - ALTLY:
+              --   { find = "^\d\+ \(change\?|more lines\?|lines\? less\); before #\d\+ \d\+ seconds\? ago$" },
               { find = "; after #%d+" },
               { find = "; before #%d+" },
-              -- CXREF: *Reducing the noise from neovim messages*
-              -- https://github.com/folke/noice.nvim/discussions/908#discussioncomment-10583586
-              -- CXREF:
-              -- ~/.kit/nvim/embrace-vim/start/vim-command-line-clock/autoload/embrace/command_line_clock.vim @ 533
+
+              -- Additional rules nvim-lazyb adds.
               { find = "%d fewer lines" },
               { find = "%d more lines" },
-              -- { find = "written" },
               { find = '%d lines? yanked into "' },
               -- E.g., "3 lines <ed 1 time"
               { find = "%d lines? [<>]ed %d times?" },
-              -- SPIKE: Why don't these work?
+
+              -- SPIKE: Why don't these rules work? (Perhaps because they're
+              -- displayed on startup before this config is loaded?)
               -- E.g., "W325: Ignoring swapfile from Nvim process 1648"
               { find = "^W325: Ignoring swapfile from Nvim process " },
               { find = "W325: Ignoring swapfile from Nvim process " },
