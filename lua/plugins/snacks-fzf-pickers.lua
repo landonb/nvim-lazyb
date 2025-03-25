@@ -221,7 +221,7 @@ return {
               "--glob",
               "!**/{.git,.tox,node_modules,.crypt}/**",
               "--glob",
-              "!**/{*.swp,.bash_history,*.bin,*.gif,*.gpg,*.jpg,*.Jpg,*.JPG,*.nib,*.odg,*.odt,*.pdf,*.Pdf,*.PDF,*.png,*.pyc,*.svg,.viminfo,*.xpm,*.zip,doc/tags}",
+              "!**/{*.3gp,.bash_history,*.bin,*.dat,*.gif,*.gpg,*.ithmb,*.jpeg,*.jpg,*.Jpg,*.JPG,.localized,*.nib,*.odg,*.odt,*.otf,*.pdf,*.Pdf,*.PDF,*.png,*.pyc,*.strings,*.svg,*.swp,*.tagset,*.ttf,.viminfo,*.xpm,*.zip,doc/tags}",
 
               -- USAGE: Add --debug or --trace for runtime TMI.
               -- - Though I'm not sure how useful, at least for `rg --files`
