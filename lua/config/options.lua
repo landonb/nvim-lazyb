@@ -103,6 +103,18 @@ opt.showtabline = 0
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- ISOFF: At first I didn't necessarily like that new windows opened
+-- below — mostly I didn't necessarily like that help windows opened
+-- below.
+-- - But that behavior has been growing on me...
+--   - In any case, here's the simple switch to open help windows above,
+--     etc.
+--
+--  -- Put new windows above current.
+--  opt.splitbelow = false
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- CXREF: Optional user config:
 -- ~/.config/nvim_lazyb/lua/config/options-client.lua
 pcall(function()
