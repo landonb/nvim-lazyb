@@ -97,6 +97,12 @@ opt.scrolloff = 0
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- Don't show *tabline* buffer list at the top.
+-- USAGE: Toggle on in LazyVim: <Leader>uA
+opt.showtabline = 0
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- CXREF: Optional user config:
 -- ~/.config/nvim_lazyb/lua/config/options-client.lua
 pcall(function()
