@@ -195,6 +195,44 @@ return {
         silent = true,
         desc = "Buffer and Qf Substitute All",
       },
+      -- COPYD: Inspired by:
+      -- https://github.com/ecosse3/nvim/blob/master/lua/config/keymappings.lua
+
+      -- Navigate Quickfix results
+      {
+        mode = { "n", "i" },
+        "<LocalLeader>,",
+        ":cp<CR>",
+        silent = true,
+        desc = "Quickfix open prev",
+      },
+      {
+        mode = { "n", "i" },
+        "<LocalLeader>.",
+        ":cn<CR>",
+        silent = true,
+        desc = "Quickfix open next",
+      },
+
+      -- Toggle quicklist
+      -- - CALSO: <Shift-Alt-3> :QFix(0)
+      {
+        mode = "n",
+        "<leader>uq",
+        -- "<cmd>lua require('utils').toggle_quicklist()<CR>",
+        -- - COPYD:
+        --   https://github.com/ecosse3/nvim/blob/master/lua/utils/init.lua
+        -- M.toggle_quicklist = function()
+        function()
+          if vim.fn.empty(vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix")) == 1 then
+            vim.cmd("copen")
+          else
+            vim.cmd("cclose")
+          end
+        end,
+        silent = true,
+        desc = "Toggle Quickfix",
+      },
     },
   },
 
