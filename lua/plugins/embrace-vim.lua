@@ -603,11 +603,18 @@ return {
     -- (vs. waiting to load when keys{} command used).
     event = "VeryLazy",
 
+    init = function()
+      -- TRACK/2025-03-24: Now inhibiting default maps.
+      -- - Keep an eye out for anything you use that's missing.
+      vim.g.fugitive_no_maps = true
+    end,
+
     config = function()
       -- FIXME: Localize this file.
 
-      -- CXREF:
-      -- ~/.kit/nvim/DepoXy/start/vim-depoxy/autoload/git_fugitive_window_cleanup.vim
+      -- Load autoload# fcn: git_fugitive_window_cleanup#close_git_windows()
+      -- - CXREF:
+      --   ~/.kit/nvim/DepoXy/start/vim-depoxy/autoload/git_fugitive_window_cleanup.vim
       pcall(function()
         vim.cmd(
           "source "
@@ -647,6 +654,41 @@ return {
         silent = true,
         desc = alt_keys.AltKeyDesc("Fugitive Blame", "M-b"),
       },
+    },
+
+    -- COPYD: https://github.com/NormalNvim/NormalNvim/blob/main/lua/plugins/4-dev.lua#L108-L145
+    --
+    --  Git fugitive mergetool + [git commands]
+    --  https://github.com/lewis6991/gitsigns.nvim
+    --  PR needed: Setup keymappings to move quickly when using this feature.
+    --
+    --  We only want this plugin to use it as mergetool like "git mergetool".
+    --  To enable this feature, add this  to your global .gitconfig:
+    --
+    --  [mergetool "fugitive"]
+    --  	cmd = nvim -c \"Gvdiffsplit!\" \"$MERGED\"
+    --  [merge]
+    --  	tool = fugitive
+    --  [mergetool]
+    --  	keepBackup = false
+    enabled = vim.fn.executable("git") == 1,
+    -- SPIKE/2025-03-24: Is it though?
+    dependencies = { "tpope/vim-rhubarb" },
+    cmd = {
+      "Gvdiffsplit",
+      "Gdiffsplit",
+      "Gedit",
+      "Gsplit",
+      "Gread",
+      "Gwrite",
+      "Ggrep",
+      "GMove",
+      "GRename",
+      "GDelete",
+      "GRemove",
+      "GBrowse",
+      "Git",
+      "Gstatus",
     },
   },
 
