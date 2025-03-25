@@ -117,11 +117,18 @@ return {
     },
 
     keys = {
-      -- FEATR: Close noice overflow window (whatever it's called; when you,
-      -- e.g., :mess and Noice opens a Scratch buffer window at the bottom).
-      --
-      -- FTREQ: Toggle Noice window.
-      -- FIXME: FTREQ: Clear Noice history (:mess clear does not).
+      -- INERT/FTREQ: Clear `:Noice history` (aka `:Noice`).
+      -- - This might be the only approach:
+      --     lua require("noice.message.manager")._history = {}
+      --   - REFER: @folke says won't fix:
+      --     https://github.com/folke/noice.nvim/issues/731
+      -- - INERT: I use <Leader>n to view notifications (<Leader>n shows
+      --   a subset of what :Noice shows), and lately I haven't been
+      --   bothered by it not being cleared (unlike :messages, which I
+      --   often `:mess clear`, especially when I'm debugging).
+
+      -- USAGE: Toggle Noice split window used to show :messages
+      --        w/ <Shift-Alt-2> aka <Alt-@>.
       {
         mode = { "n", "i" },
         -- BNDNG: <Shift-Alt-2> aka <Shift-Alt-@> aka <M-@> aka <€>
