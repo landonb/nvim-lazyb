@@ -12,6 +12,9 @@
 --  - Also: *feat: integrate with Noice + use as cmdline UI?*
 --    https://github.com/j-hui/fidget.nvim/issues/210
 
+-- SPIKE: Peruse Ecovim for settings ideas:
+-- https://github.com/ecosse3/nvim/blob/master/lua/plugins/noice.lua
+
 local alt_keys = require("util.alt2meta-keys")
 
 return {
