@@ -115,6 +115,17 @@ opt.showtabline = 0
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- |vim.o.conceallevel|
+--
+-- LazyVim <Leader>uc toggles Conceal Level, which defaults 2.
+--
+-- Except I find this makes Markdown and Vim help files more
+-- difficult to edit.
+
+opt.conceallevel = 0
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- CXREF: Optional user config:
 -- ~/.config/nvim_lazyb/lua/config/options-client.lua
 pcall(function()
