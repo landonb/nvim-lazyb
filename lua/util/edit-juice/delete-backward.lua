@@ -218,15 +218,7 @@ end
 --     presses, where n is the number of lines originally in the file.
 
 function M.delete_back_line()
-  -- SAVVY: <c-g>u starts a new Undo set, so the deletion can be undone.
-  -- - REFER: :help undo-break
-  -- - BWARE: Note that running <c-g>u moves the cursor, e.g., if the
-  --   user <S-C-W>'s from the end of a line and this fcn. starts with:
-  --     execute "normal i\<C-g>u\<ESC>"
-  --   then the final 2 chars from that line are left behind.
-  --   - So use the other trick to close the undo block, assign to undolevels:
-  --let &g:undolevels = &g:undolevels
-  vim.g.undolevels = vim.g.undolevels
+  require("util.edit-juice").undo_break()
 
   -- Mimic `d<Home>`, but behave better at end of line.
   local curr_col = vim.fn.col(".")
