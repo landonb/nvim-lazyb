@@ -413,6 +413,19 @@ wk.add({
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- COPYD: And added 'desc', from:
+-- https://github.com/ecosse3/nvim/blob/master/lua/config/keymappings.lua
+
+-- Don't yank on delete char
+map({ "n", "x" }, "x", '"_x', { silent = true, desc = "Delete characters" })
+map({ "n", "x" }, "X", '"_X', { silent = true, desc = "Delete characters" })
+
+-- Don't yank on visual paste
+--  map("x", "p", '"_dP', { silent = true, desc = "Put from register" })
+
+-- -----------------------------------------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- CXREF:
 -- ~/.config/nvim_lazyb/lua/config/keymaps/date-and-time.lua
 require("config.keymaps.date-and-time")

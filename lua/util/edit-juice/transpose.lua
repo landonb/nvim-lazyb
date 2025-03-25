@@ -29,9 +29,9 @@ function M.transpose_characters()
   local cursor_col = vim.fn.col(".")
 
   if 1 == cursor_col then
-    vim.fn.execute("normal " .. "xp")
+    vim.fn.execute("normal! xp")
   else
-    vim.fn.execute("normal " .. "Xp")
+    vim.fn.execute("normal! Xp")
   end
 end
 
