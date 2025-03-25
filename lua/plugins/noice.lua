@@ -12,6 +12,12 @@
 --  - Also: *feat: integrate with Noice + use as cmdline UI?*
 --    https://github.com/j-hui/fidget.nvim/issues/210
 
+-- USAGE: Show Noice history in bottom scratch:
+--
+--   lua require('noice').cmd()
+--
+-- See also `:Noice <Tab>`
+
 -- SPIKE: Peruse Ecovim for settings ideas:
 -- https://github.com/ecosse3/nvim/blob/master/lua/plugins/noice.lua
 
