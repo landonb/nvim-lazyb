@@ -171,8 +171,9 @@ end
 function M.move_insert_cursor_to_end_of_line()
   -- DUNNO: Unsure why, but need to both `l` and to call nvim_win_set_cursor...
   vim.cmd([[normal l]])
+
   local cur_win = 0
-  vim.api.nvim_win_set_cursor(cur_win, { vim.fn.line("."), vim.fn.col(".") + 1 })
+  vim.api.nvim_win_set_cursor(cur_win, { vim.fn.line("."), vim.fn.col("$") })
 end
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
