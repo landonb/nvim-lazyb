@@ -194,6 +194,13 @@ end
 -- abc-def -abc- ../foo/bar/.. foo/bar/baz  ??what_foo-bar(baz;bat.qux)
 
 function M.DeleteForwardWord()
+  local restore_shm = vim.o.shortmess
+  vim.opt.shortmess:append("S")
+  -- print("vim.opt.shortmess", vim.o.shortmess:):
+  --   nvim-lazyb/LazyVim: WtlFIoOcTCS
+  --   Neovim: ltToOCF
+  -- echo "WtlFIoOcTCS" | sed "s/\(.\)/\1\n/g" | sort | tr -d '\n'
+  --   CFIOSTWclot
   local last_pttrn = vim.fn.getreg("/")
   -- Match:
   --   at the beginning of a word boundary;
@@ -269,12 +276,14 @@ function M.DeleteForwardWord()
   vim.cmd([[normal! l]])
 
   vim.fn.setreg("/", last_pttrn)
+  -- vim.cmd.nohlsearch()
+  -- -- Clear the ghost text (extmark) user now sees after last column:
+  -- --   ...     /\(\_^\zs\|\<\zs\|\>\zs[^\n]\|\s\+\zs\)    [>99/>99]
+  -- -- KLUGE: This empty print does the trick, but not vim.cmd("nohlsearch")
+  -- print(" ")
+  vim.o.shortmess = restore_shm
   vim.cmd.nohlsearch()
-  -- Clear the ghost text (extmark) user now sees after last column:
-  --   ...     /\(\_^\zs\|\<\zs\|\>\zs[^\n]\|\s\+\zs\)    [>99/>99]
-  -- KLUGE: This empty print does the trick, but not vim.cmd("nohlsearch")
-  print(" ")
-  -- Trace after the print() or user won't see it (unless they :mess).
+  -- -- Trace after the print() or user won't see it (unless they :mess).
   M.trace("_db deleted fwd using @/ pattern")
 end
 
