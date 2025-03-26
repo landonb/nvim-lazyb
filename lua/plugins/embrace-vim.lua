@@ -198,21 +198,24 @@ return {
       -- COPYD: Inspired by:
       -- https://github.com/ecosse3/nvim/blob/master/lua/config/keymappings.lua
 
-      -- Navigate Quickfix results
-      {
-        mode = { "n", "i" },
-        "<LocalLeader>,",
-        ":cp<CR>",
-        silent = true,
-        desc = "Quickfix open prev",
-      },
-      {
-        mode = { "n", "i" },
-        "<LocalLeader>.",
-        ":cn<CR>",
-        silent = true,
-        desc = "Quickfix open next",
-      },
+      -- ISOFF: Neovim 0.11 adds [q and ]q prev/next (inspired by vim-fugitive).
+      -- - Also [Q ]Q first/last quickfix item.
+      --
+      -- -- Navigate Quickfix results
+      -- {
+      --   mode = { "n", "i" },
+      --   "<LocalLeader>,",
+      --   ":cp<CR>",
+      --   silent = true,
+      --   desc = "Quickfix open prev",
+      -- },
+      -- {
+      --   mode = { "n", "i" },
+      --   "<LocalLeader>.",
+      --   ":cn<CR>",
+      --   silent = true,
+      --   desc = "Quickfix open next",
+      -- },
 
       -- Toggle quicklist
       -- - CALSO: <Shift-Alt-3> :QFix(0)
