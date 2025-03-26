@@ -15,6 +15,26 @@ local alt_keys = require("util.alt2meta-keys")
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- FTREQ/MAYBE: ft-specific jumpers:
+-- - <Alt-w>h moves cursor to :help window (ft=help)
+-- - <Alt-w>n moves cursor to Noice window (ft=noice)
+-- - <Alt-w>q moves cursor to Quickfix window (ft=qf)
+-- - THOTS: Starting with winnr()+1, look for next matching ft.
+--   Wrap around at end. Stop back at starting winnr().
+--   - Remember starting window so running command twice acts
+--     as toggle (that, or running command from target window
+--     runs :CTRL-W_p instead).
+--   - Use vim.nvim_tabpage_list_wins(0) as alt to while <= winnr("$")
+--     - Could you pass through vim.tbl_filter or would that
+--       not respect order? Could always sort...
+--     - nvim_tabpage_list_wins(0) returns, e.g.,
+--         { 5158, 1000, 1007, 5699, 5622, 5274, 5267, 5744, 5743, 5160, 5159 }
+--       which matches my window order, per vim.api.nvim_get_current_win()
+--       - So a tbl_filter might work.
+--   - SERCH: winnr\(.\\$
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- Create useful key mappings inspired by :wincmd and the gVim menu bar
 -- (as configured by $VIMRUNTIME/menu.vim, which still exists in Neovim).
 -- - These are especially useful from Insert mode, if you want to avoid
