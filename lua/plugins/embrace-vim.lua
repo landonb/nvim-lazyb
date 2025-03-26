@@ -242,12 +242,12 @@ return {
   -- Opens item under cursor in the previously focused window when you
   -- <CR> or <2-LeftMouse> (double-click) on Quickfix item (among lots
   -- of other features, but that's the one I care about).
-  -- - Default LazyVim behavior seems to use previously focused window,
-  --   so QFEnter may be unnecessary.
+  -- - Default Neovim behavior seems to use previously focused window,
+  --   but QFEnter avoids some special buffer windows (like help).
+  -- - QFEnter sets a few ft=qf maps, incl. <CR> and <2-LeftMouse>.
   {
     dir = "~/.kit/nvim/landonb/QFEnter",
-    -- ISOFF/2025-03-09: Probably don't need.
-    lazy = true,
+    event = "VeryLazy",
   },
 
   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
