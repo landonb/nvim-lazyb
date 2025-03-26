@@ -850,6 +850,23 @@ return {
       -- CXREF: See Snack and FZF file pickers elsewhere:
       -- ~/.kit/nvim/landonb/nvim-lazyb/lua/plugins/snacks-fzf-pickers.lua
       -- - Including <LocalLeader>F, <LocalLeader>dF, etc.
+
+      -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+      -- REFER: LazyVim <Leader>q bindings: <L>qs | <L>qS | <L>ql | <L>qd
+      --   cd ~/.local/share/nvim_lazyb/lazy
+      --   rg "leader>q"
+      {
+        -- SAVVY: Dashboard runs as a floating window and works best if you
+        -- close all windows first (:only).
+        -- MAYBE: Move LazyVim don't-save-Session from <Leader>fd → <Leader>fD
+        -- BNDNG: <Leader>q aka <Leader>fD
+        "<leader>qD",
+        function()
+          Snacks.dashboard()
+        end,
+        desc = "Snacks Dashboard",
+      },
     },
   },
 }
