@@ -856,6 +856,7 @@ return {
       -- REFER: LazyVim <Leader>q bindings: <L>qs | <L>qS | <L>ql | <L>qd
       --   cd ~/.local/share/nvim_lazyb/lazy
       --   rg "leader>q"
+      -- REFER: nvim-lazyb: <L>qD (Snacks Dashboard) | <L>qw (Persistence Write)
       {
         -- SAVVY: Dashboard runs as a floating window and works best if you
         -- close all windows first (:only).
