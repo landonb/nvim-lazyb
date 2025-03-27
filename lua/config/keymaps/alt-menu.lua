@@ -115,8 +115,16 @@ function M.CreateDubsVimMappings()
   map(
     { "n", "i" },
     alt_keys.alt_f .. "c",
-    "<cmd>:Bdelete<CR>",
-    { desc = alt_keys.AltKeyDesc("Delete Buffer", "<M-f>c"), noremap = true, silent = true }
+    -- HSTRY/2025-03-27: Previously just a simple delete buffer:
+    --   "<cmd>Bdelete<CR>",
+    function()
+      require("util.buffer-delights").close_floats_or_delete_buffer()
+    end,
+    {
+      desc = alt_keys.AltKeyDesc("Close Floatwin(s) or Delete Buffer", "<M-f>c"),
+      noremap = true,
+      silent = true,
+    }
   )
 
   -- <M-f>e — Cl<e>ar the buffer list

@@ -991,9 +991,13 @@ end, { desc = "Quit All", noremap = true })
 wk.add({
   mode = { "n", "i" },
   "<LocalLeader>dC",
-  "<cmd>Bdelete<CR>",
+  -- HSTRY/2025-03-27: Previously just a simple delete buffer:
+  --   "<cmd>Bdelete<CR>",
+  function()
+    require("util.buffer-delights").close_floats_or_delete_buffer()
+  end,
   noremap = true,
-  desc = "Delete Buffer",
+  desc = "Close Floatwin(s) or Delete Buffer",
   icon = "󰆴",
 })
 
