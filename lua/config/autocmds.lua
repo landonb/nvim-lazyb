@@ -19,6 +19,8 @@
 ---@field use_normal_mode_in_snacks_picker_list function()
 local M = {}
 
+local wk = require("which-key")
+
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 -- E.g.: M.group = vim.api.nvim_create_augroup("lazyb_autocmds", { clear = true })
@@ -255,6 +257,31 @@ vim.api.nvim_create_autocmd("FileType", {
   },
   callback = function()
     vim.bo.iskeyword = "@,-,48-57,_,192-255"
+  end,
+})
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+-- CXREF: Add to :: :? :L family of cmdline runners:
+--   s:CreateAutocmdMapsVimFunctions()
+-- ~/.kit/nvim/landonb/dubs_edit_juice/plugin/dubs_edit_juice.vim
+
+-- DUNNO: `:checkhealth which-key` reports:
+--   "WARNING Duplicates for <:I> in mode `v`".
+-- - Though `vmap :I` shows just the one.
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = M.group,
+  pattern = { "help", "vim", "lua", "rst", "markdown", "txt" },
+  callback = function()
+    wk.add({
+      mode = { "v" },
+      ":I",
+      [[:<C-U><CR>gvy:call histadd('cmd', 'I ' .. @")<CR>:I <C-R>"<CR>]],
+      buffer = true,
+      desc = "Inspect Selected",
+      icon = "",
+    })
   end,
 })
 
