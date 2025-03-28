@@ -103,6 +103,7 @@ map({ "n", "i" }, "<F9>", function()
   local ext = vim.fn.expand("%:e")
   if ext == "lua" then
     vim.cmd([[luafile %]])
+    M.clearRequirePackageCache()
   elseif ext == "vim" then
     vim.cmd([[exec "source " .. bufname("%")]])
     local bufname = vim.api.nvim_buf_get_name(0)
@@ -111,6 +112,52 @@ map({ "n", "i" }, "<F9>", function()
     print("Cannot reload unknown file type: " .. ext)
   end
 end, { desc = "Reload Luafile/Vimscript", noremap = true, silent = true })
+
+function M.clearRequirePackageCache()
+  local repo_root = LazyVim.root()
+  local norm_root = vim.fs.normalize(repo_root)
+
+  local file_path = vim.fn.expand("%:p")
+  -- Normalize path (expand ~ (no-op), resolve . and .. (no-op), convert \ → / (Windows))
+  -- - ALTLY: vim.fs.abspath converts \ → /, too, and would resolve symlink paths.
+  --   - SPIKE: What's the package.loaded key value for a symlink?
+  --     - I'm gonna guess... the symlink path, and not the target.
+  --       In which case using normalize() is correct.
+  local norm_path = vim.fs.normalize(file_path)
+
+  local alert_failed = function(fiver, norm_path, norm_root)
+    print(
+      fiver
+        .. ": Cannot suss package.loaded[] key for file ("
+        .. norm_path
+        .. ") with root ("
+        .. norm_root
+        .. ")"
+    )
+  end
+
+  if not vim.startswith(norm_path, norm_root) then
+    alert_failed("ALERT", norm_path, norm_root)
+  else
+    local relative_path = vim.fn.substitute(norm_path, "^" .. norm_root, "", "")
+    if relative_path == norm_path then
+      alert_failed("GAFFE", norm_path, norm_root)
+    else
+      local reduced_path = relative_path
+      -- MAYBE: Replace with Lua string.gsub usage.
+      reduced_path = vim.fn.substitute(reduced_path, "^/lua/", "", "")
+      reduced_path = vim.fn.substitute(reduced_path, "/init.lua$", "", "")
+      reduced_path = vim.fn.substitute(reduced_path, ".lua$", "", "")
+      local parts = vim.split(reduced_path, "/", { plain = true })
+      -- Because table, not List, not this: vim.cmd.join(parts, ".")
+      local module = require("plenary.functional").join(parts, ".")
+      -- Note that `package.loaded[module]` remains nil until it's
+      -- require()'d again.
+      package.loaded[module] = nil
+      print("Reloaded “" .. module .. "”")
+    end
+  end
+end
 
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
