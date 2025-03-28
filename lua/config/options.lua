@@ -97,12 +97,6 @@ opt.scrolloff = 0
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
--- Don't show *tabline* buffer list at the top.
--- USAGE: Toggle on in LazyVim: <Leader>uA
-opt.showtabline = 0
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 -- ISOFF: At first I didn't necessarily like that new windows opened
 -- below — mostly I didn't necessarily like that help windows opened
 -- below.
