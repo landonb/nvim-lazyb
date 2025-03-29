@@ -298,15 +298,15 @@ end, { desc = "Delete Back Word" })
 
 vim.keymap.set({ "s" }, "<C-W>", "<Delete>", { desc = "Delete Selected Text" })
 
--- BNDNG: <M-W>
+-- BNDNG: <Shift-Ctrl-W> <C-S-W> <S-C-W>
 vim.keymap.set(
   { "n", "i" },
-  alt_keys.lookup("W"),
+  ctrl_keys.lookup("W"),
   -- Basically "<cmd>normal! dB<CR>", except fixes cursor position.
   function()
     require("util.edit-juice.delete-backward").delete_back_WORD()
   end,
-  { desc = alt_keys.AltKeyDesc("Delete Back WORD", "<M-W>"), noremap = true, silent = true }
+  { desc = "Delete Back WORD (M-S-W)", noremap = true, silent = true }
 )
 
 -- Ctrl-Shift-Backspace deletes to start of line. Aka *<C-S-Backspace>*
@@ -335,6 +335,21 @@ end, { desc = "Delete Back Line" })
 -- vim.keymap.set({ "i" }, alt_keys.lookup("W"), function()
 --   require("util.edit-juice.delete-backward").delete_back_line()
 -- end, { desc = alt_keys.AltKeyDesc("Delete Back Line", "<M-S-W>") })
+
+-- CXREF: ~/.kit/nvim/landonb/dubs_edit_juice/plugin/ctrl-backspace.vim
+--   inoremap <c-s-w> <C-O>:<C-U>call <SID>delete_back_line()<CR>
+--   if has('macunix')
+--     inoremap „ <C-O>:<C-U>call <SID>delete_back_line()<CR>
+--   else
+--     inoremap <m-s-w> <C-O>:<C-U>call <SID>delete_back_line()<CR>
+--   endif
+-- CXREF: ~/.depoxy/ambers/home/.config/alacritty/alacritty.toml
+--   { key = "W", mods = "Control|Shift", chars = "\uE016" },
+-- BUGGN: Causes "î" which-key entry (see notes above).
+-- BNDNG: <Shift-Alt-W> <M-S-W> <S-M-W>
+vim.keymap.set({ "n", "i" }, alt_keys.lookup("W"), function()
+  require("util.edit-juice.delete-backward").delete_back_line()
+end, { desc = alt_keys.AltKeyDesc("Delete Back Line", "<M-W>"), noremap = true, silent = true })
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -444,21 +459,6 @@ vim.keymap.set(
   "<C-D>",
   { desc = "Scroll Window Downwards (like C-D) (C-S-U)" }
 )
-
--- CXREF: ~/.kit/nvim/landonb/dubs_edit_juice/plugin/ctrl-backspace.vim
---   inoremap <c-s-w> <C-O>:<C-U>call <SID>delete_back_line()<CR>
---   if has('macunix')
---     inoremap „ <C-O>:<C-U>call <SID>delete_back_line()<CR>
---   else
---     inoremap <m-s-w> <C-O>:<C-U>call <SID>delete_back_line()<CR>
---   endif
--- CXREF: ~/.depoxy/ambers/home/.config/alacritty/alacritty.toml
---   { key = "W", mods = "Control|Shift", chars = "\uE016" },
--- BUGGN: Causes "î" which-key entry (see notes above).
--- BNDNG: <Shift-Ctrl-W>
-vim.keymap.set({ "n", "i" }, ctrl_keys.lookup("W"), function()
-  require("util.edit-juice.delete-backward").delete_back_line()
-end, { desc = "Delete Back Line (C-S-W)" })
 
 wk.add({
   {
