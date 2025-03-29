@@ -298,6 +298,17 @@ end, { desc = "Delete Back Word" })
 
 vim.keymap.set({ "s" }, "<C-W>", "<Delete>", { desc = "Delete Selected Text" })
 
+-- BNDNG: <M-W>
+vim.keymap.set(
+  { "n", "i" },
+  alt_keys.lookup("W"),
+  -- Basically "<cmd>normal! dB<CR>", except fixes cursor position.
+  function()
+    require("util.edit-juice.delete-backward").delete_back_WORD()
+  end,
+  { desc = alt_keys.AltKeyDesc("Delete Back WORD", "<M-W>"), noremap = true, silent = true }
+)
+
 -- Ctrl-Shift-Backspace deletes to start of line. Aka *<C-S-Backspace>*
 -- - Like `d<Home>` but way more complicated. As usual.
 -- Builtins same as <C-BS>: Jumps backward to start of word in Normal

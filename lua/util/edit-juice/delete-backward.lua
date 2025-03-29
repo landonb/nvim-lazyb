@@ -41,7 +41,8 @@ local M = {}
 -- restored word, not at the end of it like when you undo default
 -- <Ctrl-W>.
 
-function M.delete_back_word()
+function M.delete_back_word(opts)
+  local back_WORD = opts and opts.type == "WORD"
   -- Without a new break, if you type something then delete it,
   -- undo won't restore what you typed.
   -- - Which is generally how default Vim works, where all text
@@ -90,8 +91,8 @@ function M.delete_back_word()
       -- E.g., " x$", "foo's$", and "foo-$", respectively:
       and (
         curr_line:find("%s%S$")
-        or (vim.fn.match(curr_line, "\\<.$") ~= -1)
-        or (vim.fn.match(curr_line, "\\>.$") ~= -1)
+        or (not back_WORD and vim.fn.match(curr_line, "\\<.$") ~= -1)
+        or (not back_WORD and vim.fn.match(curr_line, "\\>.$") ~= -1)
       )
     then
       vim.cmd([[normal! x]])
@@ -115,12 +116,12 @@ function M.delete_back_word()
         -- Delete to start of line without gobbling newline.
         .. "\\|\\_^\\zs"
         -- Delete to start of word boundary.
-        .. "\\|\\<\\zs"
+        .. (not back_WORD and "\\|\\<\\zs" or "")
         -- Don't stop at word boundary if only one whitespace between word and cursor.
         -- - This stops at word boundary:
         --     .. "\\|\\>\\zs"
         --   - But we want delete backward "foo |" to "|" and not just "foo|".
-        .. "\\|\\>\\zs\\(\\S\\|\\s\\s\\+\\)"
+        .. (not back_WORD and "\\|\\>\\zs\\(\\S\\|\\s\\s\\+\\)" or "")
         -- If single char. WORD followed by whitespace then cursor, delete
         -- only the whitespace (and don't include the single char. WORD).
         .. "\\|\\s\\+\\zs"
@@ -178,6 +179,10 @@ function M.delete_back_word()
   pcall(function()
     require("blink-cmp").hide()
   end)
+end
+
+function M.delete_back_WORD()
+  M.delete_back_word({ type = "WORD" })
 end
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
