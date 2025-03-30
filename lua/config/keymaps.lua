@@ -595,8 +595,7 @@ wk.add({
     { mode = { "n", "i" }, "<localleader>za", desc = "Toggle the Fold Under the Cursor" },
   },
   {
-    mode = { "n", "i" },
-    { "<localleader>dA", desc = "Show ASCII Character Table" },
+    { mode = { "n", "i" }, "<localleader>dA", desc = "Show ASCII Character Table" },
     -- Built-in Normal and Visual mode CTRL-] and v_CTRL-]
     -- - CXREF: See broken-ish Insert mode <Ctrl-]>:
     --   ~/.kit/nvim/landonb/nvim-lazyb/lua/util/edit-juice/init.lua
