@@ -67,7 +67,7 @@ return {
     --     ~/.local/share/nvim_lazyb/lazy/lualine.nvim/lua/lualine/highlight.lua
     -- - CXREF: See `Mode.map`
     --     ~/.local/share/nvim_lazyb/lazy/lualine.nvim/lua/lualine/utils/mode.lua
-    build = require("util").lazy_build_fork("lualine.nvim"),
+    build = require("util").lazy_build_fork("lualine.nvim", "master"),
 
     --opts = function(_, opts)
     -- hi MescalineF3Clock guifg=#005f00 guibg=#52B788

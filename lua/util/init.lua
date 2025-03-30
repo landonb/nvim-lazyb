@@ -14,13 +14,15 @@ local M = {}
 
 -- FTREQ: Pass in specs instead, and get path that specs object.
 
-M.lazy_build_fork = function(proj_dir)
+M.lazy_build_fork = function(proj_dir, upstream)
   return function()
     vim.fn.system([[
       cd -- "]] .. vim.fn.stdpath("data") .. "/lazy/" .. proj_dir .. [[" &&
-      git checkout liminal &&
       git fetch origin &&
-      git rebase origin/main
+      git checkout ]] .. upstream .. [[ &&
+      git merge --ff-only origin/]] .. upstream .. [[ &&
+      git checkout liminal &&
+      git rebase ]] .. upstream .. [[
       ]])
   end
 end

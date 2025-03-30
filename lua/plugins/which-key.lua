@@ -49,7 +49,7 @@ return {
   {
     "folke/which-key.nvim",
     -- event = "VeryLazy",
-    build = require("util").lazy_build_fork("which-key.nvim"),
+    build = require("util").lazy_build_fork("which-key.nvim", "main"),
     opts_extend = { "spec" },
     opts = {
       -- preset = "helix",

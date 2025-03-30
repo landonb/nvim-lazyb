@@ -523,7 +523,7 @@ return {
     -- - SAVVY: This plugin always appears to have updates in :Lazy.
     -- - SAVVY: Note that lazy does not change directories, e.g.,
     --   vim.fn.getcwd() is wherever user was when they ran Lazy.
-    build = require("util").lazy_build_fork("snacks.nvim"),
+    build = require("util").lazy_build_fork("snacks.nvim", "main"),
 
     -- -----------------------------------------------------------------
     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
