@@ -97,7 +97,9 @@ vim.api.nvim_create_autocmd("BufEnter", {
       vim.wo.relativenumber = vim.b.relativenumber
     elseif vim.bo.filetype == "rst" then
       vim.wo.relativenumber = false
-    elseif require("util.buffer-delights.normal-buffer").IsNormalBuffer(vim.fn.bufnr()) then
+    elseif
+      require("util.buffer-delights.normal-buffer").IsNormalBuffer(vim.api.nvim_get_current_buf())
+    then
       -- Default to showing relative line numbers, but only if
       -- a normal buffer (e.g., don't start showing lines numbers
       -- in Snacks Explorer, or a help window, etc.).
