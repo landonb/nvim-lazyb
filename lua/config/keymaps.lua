@@ -608,7 +608,26 @@ wk.add({
       desc = alt_keys.AltKeyDesc("Jump backward in tag stack", "<M-]>"),
     },
     -- CALSO: <M-f>o — <O>pen buffer in new tabpage — (same feature)
-    { "<localleader>dT", desc = "Open buffer in new tab page" },
+    {
+      mode = { "n", "i" },
+      "<localleader>dT",
+      -- HSTRY: Previously opened via path, but doesn't work w/ scratch buffers.
+      --   "<cmd>exec 'tabedit ' .. expand('%')<CR>",
+      function()
+        -- REFER: Call vim.api.nvim_get_current_buf() instead of vim.fn.bufnr().
+        -- - Unless you need to pass arg: vim.fn.bufnr(bufnr) (AFAIK).
+        local bufnr = vim.api.nvim_get_current_buf()
+        vim.cmd("tabnew")
+        -- ALTLY: We can use vim.cmd() or vim.cmd.buffer().
+        -- - DUNNO: What's the better style?
+        --   (I sorta like vim.cmd() because less verbose.)
+        -- vim.cmd("buffer " .. bufnr)
+        vim.cmd.buffer({ args = { bufnr } })
+      end,
+      desc = "Open buffer in new tab page",
+      noremap = true,
+      silent = true,
+    },
   },
   {
     { mode = "v", ":", group = "Cmdline Tools" },
