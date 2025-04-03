@@ -1053,6 +1053,24 @@ map("n", "<leader>qq", function()
   vim.cmd("qa")
 end, { desc = "Quit All", noremap = true })
 
+-- SAVVY: Neovide adds a single keymap, <Cmd-Q> quit. In all the modes.
+-- - CXREF: *Quit when Command+Q is pressed on macOS*
+--   ~/.kit/rust/neovide/lua/init.lua @ 43
+--   - DUNNO: Neovide doesn't `== 1`, but 0 is truthy. IDGI.
+--     - E.g., run this — :lua if 0 then print("0!") end
+--     - FIXME- Test Debian behavior.
+-- - MAYBE: We could disable <Cmd-Q>, but there's also something to be said for
+--   maintaining conventional macOS keybindings, such as <Cmd-Q>, <Cmd-M>, and
+--   <Cmd-H>. (Though I don't care about <Cmd-W> or <Cmd-N>; and per mswin.lua
+--   you'll see that while I wire conventional Cut, Copy, Paste, Select All,
+--   Redo, and Undo, I use their Linux/Windows <Ctrl> bindings, not <Cmd>. Ha.)
+-- - Note that Neovide includes an lmap |mapmode-l| |language-mapping|:
+--     { "n", "i", "c", "v", "o", "t", "l" }
+--   - But which-key rejects it: "WARNING Invalid mode `l`".
+if vim.fn.has("macunix") == 1 then
+  wk.add({ mode = { "n", "i", "c", "v", "o", "t" }, "<D-q>", desc = "Quit Neovide" })
+end
+
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
