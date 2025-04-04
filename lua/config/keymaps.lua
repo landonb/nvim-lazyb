@@ -1219,6 +1219,41 @@ if false then
   })
 end
 
+-- REFER: |gq| and |gw| commands both format via motion.
+-- - E.g., `gqq` and `gww` both reformat the current line.
+-- - The difference is that |gw| commands restore the cursor position.
+-- DUNNO: These reformat commands don't always work, at least not in this file.
+-- - E.g., pick any line and change its indent, then try `gqq` or `gww` to fix it.
+-- - It works for lines atop this file, but at and after the first function def:
+--     function M.inspectFn(obj)
+--   they don't work.
+-- - Fortunately, formatting on <Ctrl-S> save works.
+-- ISOFF: Unless we want to define all the motion keys, we cannot set the group.
+-- - Specifically, which-key doesn't show the |q| group when you press |g|.
+--   - Nor does which-key show the |gq| group if we define only the group here,
+--     but it will if we also define at least one final command, e.g., |gqq|.
+--   - But then it *only* shows the one final command in the motion popup
+--     (or whatever we define here), whereas if we omit the group and the
+--     command desc's, after pressing |gq|, which-key shows the normal motion
+--     key legend.
+-- - So it's a trade-off. Either:
+--   - Don't show the |q| option in the |g| legend, but do show the full motion
+--     legend after pressing |gq|. (I.e., |q| is a "hidden" option.)
+--   - Or, do show the |q| option in the |g| menu, but then we have to (re)define
+--     all the motion key desc's we want to show in the motion legend.
+-- DUNNO: While |gq| is missing from the |g| which-key popup, |gw| is not!
+-- - And I don't see any map for it, either, e.g., `nmap gww` says not-found.
+--   - So how does which-key know to show the |gw| option (and not |gq|)?
+if false then
+  wk.add({
+    mode = { "n" },
+    { "gq", group = "Format lines via {motion}" },
+    { "gqq", desc = "Format the current line" },
+    -- INERT: Add all the possible "gq*" commands and enable this wk.add.
+    -- - See comment above re: ISOFF.
+  })
+end
+
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
