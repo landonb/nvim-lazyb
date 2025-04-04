@@ -137,6 +137,13 @@ return {
           -- Move cursor to new Noice split when you run :mess.
           -- - As mentioned above, doesn't re-enter if already open.
           enter = true,
+
+          buf_options = {
+            -- FIXME- PR Noice to allow this. (This relies on my fork until then.)
+            -- - BWARE: Don't set `modifiable = false` or Noice opens-closes
+            --   :messages fast and prints "Buffer is not 'modifiable'".
+            modifiable = true,
+          },
         },
       },
 
