@@ -187,6 +187,10 @@ return {
           },
           --  -- "when nil, use defaults from documentation"
           --  view = nil,
+          ---@type NoiceViewOptions
+          opts = {
+            buf_options = { filetype = "noice_signature" },
+          },
         },
         --  -- "defaults for hover and signature help"
         --  documentation = {
