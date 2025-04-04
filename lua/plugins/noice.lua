@@ -143,6 +143,11 @@ return {
             -- - BWARE: Don't set `modifiable = false` or Noice opens-closes
             --   :messages fast and prints "Buffer is not 'modifiable'".
             modifiable = true,
+
+            -- Set a custom filetype so we can identify the :mess window.
+            -- - TRACK: Are there other Noice commands that'll use the
+            --   same &filetype? (So far I haven't seen anything.)
+            filetype = "noice_messages",
           },
         },
       },
@@ -217,7 +222,7 @@ return {
         -- REFER: nvim-depoxy <M-@> is toggle :netrw (we don't want).
         alt_keys.lookup("@"),
         function()
-          local winids = require("util.windows").close_windows_by_ft({ filetype = "noice" })
+          local winids = require("util.windows").close_windows_by_ft({ filetype = "noice_messages" })
           if #winids == 0 then
             -- SAVVY: Note the window won't open if there are no :messages.
             vim.cmd.messages()
