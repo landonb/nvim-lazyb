@@ -1201,6 +1201,27 @@ map({ "c" }, ctrl_keys.lookup("W"), "<c-u>", { desc = "Delete Back Line (C-S-
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- SPIKE: LazyVim maps `gr` which shadows some LSP built-ins; do I care?
+--   n gr *@<Lua 1119:
+--     ~/.local/share/nvim_lazyb/lazy/LazyVim/lua/lazyvim/plugins/extras/editor/snacks_picker.lua:143>
+--       References
+if false then
+  wk.add({
+    mode = { "n" },
+    -- REFER: |lsp-defaults| incl. |grr| |i_CTRL-S| etc.
+    { "grn", desc = "vim.lsp.buf.rename()" },
+    { "gra", desc = "vim.lsp.buf.code_actions()", mode = { "n", "x" } },
+    { "grr", desc = "vim.lsp.buf.references()" },
+    { "gri", desc = "vim.lsp.buf.implementation()" },
+    { "grO", desc = "vim.lsp.buf.document_symbol()" },
+    -- Obviously, we repurpose <Ctrl-S>
+    --  { "<c-s>", desc = "vim.lsp.buf.signature_help()", mode = { "s" } },
+  })
+end
+
+-- -----------------------------------------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- CXREF: Optional user config:
 -- ~/.config/nvim_lazyb/lua/config/keymaps-client.lua
 pcall(function()
