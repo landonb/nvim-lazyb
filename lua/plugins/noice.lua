@@ -114,6 +114,31 @@ return {
       --    },
       --  },
 
+      views = {
+        split = {
+          -- "Override the default split view to always enter the split when it opens."
+          -- - SAVVY: After 'enter', use <Shift-Ctrl-\> to return to previous window.
+          -- - FTREQ: Re-enter :mess window on :mess if already open.
+          --   - Currently, :mess does not re-enter :mess window if already
+          --     open (but buffer doesn't update either until you run :mess).
+          --  - MAYBE: Set filetype and redo :mess cmd (which you can't,
+          --    can you? So maybe make :Mess command or create a map).
+          --  - FTREQ: It'd be nice if `:mess clear` also closed it.
+          --    - MAYBE: Maybe this is :Mess! or something, clear and close...
+          --  - FTREQ: Scroll Nui split window to bottom on :mess.
+          -- - MAYBE: Should <Shift-Alt-2> also close signature window?
+          --   - In the least, <Ctrl-K> should close it if remains open...
+          --     - Except I introduced issue keeping it open, e.g., if you
+          --       move cursor to another window, signature window does not
+          --       close — but it does in LazyVim (`faf`) so obvi. my fault.
+          -- - FIXME: When closing Noice :mess window, return to previous window.
+          --   - MAYBE: Add prev-window to all window-close maps.
+          --
+          -- Move cursor to new Noice split when you run :mess.
+          -- - As mentioned above, doesn't re-enter if already open.
+          enter = true,
+        },
+      },
     },
 
     keys = {
