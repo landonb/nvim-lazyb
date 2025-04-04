@@ -139,6 +139,56 @@ return {
           enter = true,
         },
       },
+
+      -- CXREF: Following commented options are subset of noice defaults:
+      -- ~/.local/share/nvim_lazyb/lazy/noice.nvim/lua/noice/config/init.lua @ 116
+      lsp = {
+        --  -- override = {
+        --  --   -- "override the default lsp markdown formatter with Noice"
+        --  --   ["vim.lsp.util.convert_input_to_markdown_lines"] = false,
+        --  --   -- "override the lsp markdown formatter with Noice"
+        --  --   ["vim.lsp.util.stylize_markdown"] = false,
+        --  --   -- "override cmp documentation with Noice (needs the other options to work)"
+        --  --   ["cmp.entry.get_documentation"] = false,
+        --  -- },
+        signature = {
+          --  enabled = true,
+          auto_open = {
+            --  enabled = true,
+            --  -- "Automatically show signature help when typing a trigger
+            --  --  character from the LSP."
+            --  -- - Note that blink.cmp has a comparable option:
+            --  --     opts.completion.trigger.show_on_insert_on_trigger_character = true
+            --  --   but in LazyVim, Noice handles signatureHelp, which you
+            --  --   can enable/disable here:
+            --  --     Noice.Config.options.lsp.signature.auto_open.trigger
+            --  -- REFER: See LSP spec and search Noice for signatureHelp:
+            --  --   textDocument/signatureHelp
+            --  trigger = true,
+            --  -- "Will open signature help when jumping to Luasnip insert nodes"
+            --  luasnip = true,
+            --  -- "Will open when jumping to placeholders in snippets
+            --  -- (Neovim builtin snippets)"
+            --  snipppets = true,
+            --  -- "Debounce lsp signature help request by 50ms"
+            --  throttle = 50,
+          },
+          --  -- "when nil, use defaults from documentation"
+          --  view = nil,
+        },
+        --  -- "defaults for hover and signature help"
+        --  documentation = {
+        --    view = "hover",
+        --    ---@type NoiceViewOptions
+        --    opts = {
+        --      lang = "markdown",
+        --      replace = true,
+        --      render = "plain",
+        --      format = { "{message}" },
+        --      win_options = { concealcursor = "n", conceallevel = 3 },
+        --    },
+        --  },
+      },
     },
 
     keys = {
