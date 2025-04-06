@@ -803,13 +803,8 @@ map(
   "&wrap == 1 ? '<C-O>g0' : '<C-O>0'",
   { desc = "Home", expr = true, silent = true }
 )
--- Unlike Visual mode, <Home> during Select mode ends the selection.
-map(
-  { "s" },
-  "<Home>",
-  "&wrap == 1 ? '<C-O><Esc>g0' : '<C-O><Esc>0'",
-  { desc = "Home", expr = true, silent = true }
-)
+-- CXREF: See mswin.lua for smap <Home>:
+-- ~/.kit/nvim/landonb/nvim-lazyb/lua/util/mswin.lua
 
 -- stylua: ignore
 map(
@@ -827,13 +822,8 @@ map(
   "&wrap == 1 ? '<C-O>g$' : '<C-O>$'",
   { desc = "End", expr = true, silent = true }
 )
--- Unlike Visual mode, <End> during Select mode ends the selection.
-map(
-  { "s" },
-  "<End>",
-  "&wrap == 1 ? '<C-O><Esc>g$' : '<C-O><Esc>$'",
-  { desc = "End", expr = true, silent = true }
-)
+-- CXREF: See mswin.lua for smap <End>:
+-- ~/.kit/nvim/landonb/nvim-lazyb/lua/util/mswin.lua
 
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -978,6 +968,13 @@ map(
 --   unless |keymodel| includes "stopsel", in which case it clears
 --   the selection and returns to Insert mode. (But not in Visual mode;
 --   <Down>/<Up> still extends a Visual mode selection.)
+--   - However, using "stopsel" breaks snippets, where <Tab>bing inserts
+--     the raw snippet text, then adds a new line consisting of a
+--     single underscore, and it doesn't start "Snippet" mode.
+--   - KLUGE: So instead of using "stopsel", we'll recreate the
+--     behavior using stopsel-equivalent smap bindings.
+--   - CXREF: See those smap bindings in mswin.lua:
+--     ~/.kit/nvim/landonb/nvim-lazyb/lua/util/mswin.lua
 
 map(
   { "i" },
@@ -985,12 +982,8 @@ map(
   "&wrap == 1 ? '<C-O>gj' : '<C-O>j'",
   { desc = "Down", expr = true, silent = true }
 )
-map(
-  { "s" },
-  "<Down>",
-  "&wrap == 1 ? '<C-O><Esc>gj' : '<C-O><Esc>j'",
-  { desc = "Down", expr = true, silent = true }
-)
+-- CXREF: See mswin.lua for smap <Down>:
+-- ~/.kit/nvim/landonb/nvim-lazyb/lua/util/mswin.lua
 
 map(
   { "i" },
@@ -998,12 +991,8 @@ map(
   "&wrap == 1 ? '<C-O>gk' : '<C-O>k'",
   { desc = "Up", expr = true, silent = true }
 )
-map(
-  { "s" },
-  "<Up>",
-  "&wrap == 1 ? '<C-O><Esc>gk' : '<C-O><Esc>k'",
-  { desc = "Up", expr = true, silent = true }
-)
+-- CXREF: See mswin.lua for smap <Up>:
+-- ~/.kit/nvim/landonb/nvim-lazyb/lua/util/mswin.lua
 
 -- For parity with nvim-depoxy.
 Snacks.toggle.option("wrap", { name = "Wrap" }):map("<localleader>dw")
