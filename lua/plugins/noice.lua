@@ -236,6 +236,17 @@ return {
         silent = true,
         desc = alt_keys.AltKeyDesc("Show/Hide Noice Splits (:messages)", "<M-@>"),
       },
+      {
+        mode = { "n", "i" },
+        "<S-D-2>",
+        function()
+          vim.cmd("messages clear")
+          local winids = require("util.windows").close_windows_by_ft({ filetype = "noice_messages" })
+        end,
+        noremap = true,
+        silent = true,
+        desc = alt_keys.AltKeyDesc("`:mess clear` and Hide Noice Splits", "<D-@>"),
+      },
     },
   },
 }
