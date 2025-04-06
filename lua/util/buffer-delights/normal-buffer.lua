@@ -9,14 +9,27 @@ local M = {}
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- FIXME: Need window ID to check &previewwindow.
+--
+-- - Maybe rename IsNormalBuffer → IsNormalWindow and pass, e.g.,
+--     vim.api.nvim_win_get_number(0)
+--   And then:
+--     local bufnr = vim.api.nvim_win_get_buf(winid)
+--     local previewwindow = vim.api.nvim_get_option_value("previewwindow", { win = winid })
+
 function M.IsNormalBuffer(ref_bufnr)
-  -- Note that using special buffers (see :bufname for list)
-  -- such as "%" (name of current buffer) doesn't work for
-  -- &modifiable, which reports false (0) for modifiables.
-  -- - DUNNO: I'm didn't investigate. It's just what I see.
   local bufnr = vim.fn.bufnr(ref_bufnr)
 
-  local ftype = vim.fn.getbufvar(bufnr, "&filetype")
+  local filetype = vim.fn.getbufvar(bufnr, "&filetype")
+
+  -- REFER: Use vim.api.nvim_buf_get_name(), not vim.fn.bufname().
+  local bufname = vim.api.nvim_buf_get_name(bufnr)
+
+  -- REFER: Use vim.api.nvim_get_option_value(), not vim.fn.getbufvar().
+  local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufnr })
+  local modifiable = vim.api.nvim_get_option_value("modifiable", { buf = bufnr })
+  -- REFER: Use vim.api.nvim_get_option_value(), not vim.fn.buflisted().
+  local buflisted = vim.api.nvim_get_option_value("buflisted", { buf = bufnr })
 
   -- SAVVY: Don't avoid user help file window, i.e., if user is
   -- editing their own plugin's help file.
@@ -31,25 +44,25 @@ function M.IsNormalBuffer(ref_bufnr)
     print(
       ""
         .. "bufnr: " .. bufnr
-        .. "\n&buftype: " .. vim.fn.getbufvar(bufnr, "&buftype")
+        .. "\n&buftype: " .. buftype
         .. "\n&previewwindow: " .. vim.fn.getbufvar(bufnr, "&previewwindow")
-        .. "\n&modifiable: " .. vim.fn.getbufvar(bufnr, "&modifiable")
-        .. "\nbuflisted: " .. vim.fn.buflisted(bufnr)
-        .. "\n&filetype: " .. ftype
-        .. "\nbufname: " .. vim.fn.bufname(bufnr)
+        .. "\n&modifiable: " .. modifiable
+        .. "\nbuflisted: " .. buflisted
+        .. "\n&filetype: " .. filetype
+        .. "\nbufname: " .. bufname
     )
   end
 
   if
     false
-    or vim.fn.getbufvar(bufnr, "&buftype") ~= ""
+    or buftype ~= ""
     or vim.fn.getbufvar(bufnr, "&previewwindow") ~= 0
-    or vim.fn.getbufvar(bufnr, "&modifiable") ~= 1
-    or vim.fn.buflisted(bufnr) ~= 1
-    or ftype == "qf"
-    or ftype == "git"
-    or ftype == "fugitiveblame"
-    or vim.fn.bufname(bufnr) == "-MiniBufExplorer-"
+    or not modifiable
+    or not buflisted
+    or filetype == "qf"
+    or filetype == "git"
+    or filetype == "fugitiveblame"
+    or bufname == "-MiniBufExplorer-"
   then
     return false
   end
