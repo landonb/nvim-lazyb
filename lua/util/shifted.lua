@@ -89,6 +89,85 @@ end
 --       desc = "Start Select mode Selection & Down",
 --     })
 
+-- ------------------------------------------------------------------
+-- Wire Alt-Shift-Left/-Right to Selecting from Cursor to End of Line
+-- ------------------------------------------------------------------
+--
+-- REFER: Built-in <Shift-Alt-Left|Right> jumps to start of prev|next
+-- word, and in Insert mode stops Insert mode.
+
+-- <Shift-Alt-Left> maps
+-- ---------------------
+
+-- Normal mode Alt-Shift-Left selects from cursor to start of line
+-- (same as Shift-Home).
+map({ "n" }, "<M-S-Left>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "v0<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to SOL",
+})
+
+-- Insert mode Alt-Shift-Left selects from cursor to start of line
+-- (same as Shift-Home).
+map({ "i" }, "<M-S-Left>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "<C-O>v0<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to SOL",
+})
+
+-- Visual mode Alt-Shift-Left selects from leftside of selection to
+-- start of line (same as Shift-Home).
+map({ "v" }, "<M-S-Left>", "0", {
+  noremap = true,
+  desc = "Extend Selection to SOL",
+})
+
+-- <Shift-Alt-Right> maps
+-- ----------------------
+
+-- Normal mode Alt-Shift-Right selects from cursor to end of line
+-- (same as Shift-End).
+map({ "n" }, "<M-S-Right>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "v$<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to EOL",
+})
+
+-- Insert mode Alt-Shift-Right selects from cursor to end of line
+-- (same as Shift-End).
+map({ "i" }, "<M-S-Right>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "<C-O>v$<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to EOL",
+})
+
+-- Visual mode Alt-Shift-Right selects from rightside of selection
+-- to start of line (same as Shift-End).
+map({ "v" }, "<M-S-Right>", "$", {
+  noremap = true,
+  desc = "Extend Selection to EOL",
+})
+
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 -- Stop selection on non-shifted special keys.
