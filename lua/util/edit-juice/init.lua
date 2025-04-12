@@ -54,7 +54,7 @@ end
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
--- An Insert mode <C-]> that doesn't quite work well enough.
+-- ISOFF: An Insert mode <C-]> that doesn't quite work well enough.
 -- - Behaves like default <C-]>, which completes an iabbrev.
 -- - Also adds Normal mode <C-]> behavior: When cursor is
 --   over a keyword, this jumps to the tag def'n.
