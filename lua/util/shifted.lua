@@ -1,0 +1,144 @@
+-- vim:tw=0:ts=2:sw=2:et:ai:ft=lua
+-- Author: Landon Bouma <https://tallybark.com/>
+-- Project: https://github.com/landonb/nvim-lazyb#🧸
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+local map = vim.keymap.set
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+-- Start selection on shifted special keys, akin to `set keymodel=startsel`,
+-- but with an explicit `set selection=exclusive`, to avoid wonky behavior.
+-- - Specifically, using selection=exclusive in snippet mode impairs <Tab>,
+--   such that typing to replace the snippet selection leaves the trailing
+--   character from the placeholder text.
+--
+-- - REFER: How shifted special keys normally work:
+--
+--   - <Shift-Left>/<Shift-Right> moves [count] words backward/forward,
+--     same as |b|/|w|. (See also nvim-lazyb <Ctrl-Left/Right>.)
+--
+--   - <Shift-Up>/<Shift-Down> scrolls the window [count] pages up/down,
+--     same as <PageUp>/<PageDown> and <Ctrl-B>/<Ctrl-F>.
+--     (See also <Ctrl-D>/<Ctrl-U>, which scroll half a screen.)
+--
+--   - <Home>/<End>/<PageUp>/<PageDown> do nothing different with <Shift>.
+--
+-- - Considering that, changing shifted special key behavior doesn't make
+--   any functionality unavailable (e.g., you can use <PageUp> or <Ctrl-B>
+--   instead of <Shift-Up>).
+--
+-- Also stop selection on non-shifted special key, akin to "stopsel".
+--
+-- "Special keys" are the cursor keys, <End>, <Home>, <PageDown>, and <PageUp>.
+
+-- Wire the shifted special key maps.
+-- - Note we (possibly unconventionally) set "exclusive" selection mode
+--   to ensure that Shift-selecting behaves more "expectedly".
+--   - Why? Otherwise you'll select one more than you prob. want.
+--     - E.g., <Shift-Right> in Normal mode selects *two* characters,
+--       and if you only want to select one character, you'll have to
+--       <Shift-Right>, and then backup <Left> one.
+--       - Or, if you <Shift-Down>, you'll select a line plus a char.
+--         E.g., <Shift-Down> from the first column selects the
+--         current line, and the first character from the next line.
+--     - Note you'll notice a caret used in "exclusive" mode, and a
+--       block cursor used in "inclusive" mode, so you'll at least
+--       be able to visually discern which |selection| mode is active.
+
+for _, key in ipairs({ "Left", "Right", "Down", "Up", "Home", "End", "PageDown", "PageUp" }) do
+  map({ "n", "i" }, "<S-" .. key .. ">", function()
+    -- vim.o.keymodel = "startsel"
+    vim.o.selection = "exclusive"
+    return "<S-" .. key .. ">"
+  end, {
+    expr = true,
+    noremap = true,
+    silent = true,
+    desc = "Start Select mode " .. key,
+  })
+end
+
+-- DUNNO: I tried a different approach in an attempt to support
+-- `vim.o.keymodel = ""`, but I couldn't get it to work properly.
+-- - E.g.:
+--     map({ "i" }, "<S-Down>", function()
+--       vim.o.keymodel = ""
+--       vim.o.selection = "exclusive"
+--       -- DUNNO: This remains in Insert mode, despite the <C-g>.
+--       -- - And then after it runs, <Esc> goes to Select mode...
+--       vim.cmd([[exec "normal! vj\<C-g>"]])
+--       -- I also tried `expr = true` and these:
+--       --   return "<S-Down>"
+--       --   return "vj\\<C-g>"
+--       -- Nor did this kludgy approach work:
+--       --   vim.defer_fn(function()
+--       --     vim.cmd([[exec "normal! \<C-g>"]])
+--       --   end, 1000)
+--       -- See also |gh|, which should start Select mode... but
+--       -- maybe not from Normal mode? Not sure how it works.
+--       --   vim.cmd([[exec "normal! gh\<S-Down>"]])
+--     end, {
+--       noremap = true,
+--       -- I tried with and without `silent = true`, but neither
+--       -- makes the <C-g> work (I've got a comment elsewhere
+--       -- that warns that `silent = true` leaves Insert map
+--       -- in Insert mode until user presses another key).
+--       silent = true,
+--       desc = "Start Select mode Selection & Down",
+--     })
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+-- Stop selection on non-shifted special keys.
+--
+-- This emulates |'keymodel'|'s "stopsel", except we don't use "stopsel"
+-- because it breaks snippet mode.
+
+map({ "s" }, "<Left>", "<Esc>h", { noremap = true, silent = true, desc = "Stop Selection & Left" })
+map({ "s" }, "<Right>", "<Esc>l", { noremap = true, silent = true, desc = "Stop Selection & Right" })
+map(
+  { "s" },
+  "<Down>",
+  "&wrap == 1 ? '<C-O><Esc>gj' : '<C-O><Esc>j'",
+  { desc = "Stop Selection & Down", expr = true, silent = true }
+)
+map(
+  { "s" },
+  "<Up>",
+  "&wrap == 1 ? '<C-O><Esc>gk' : '<C-O><Esc>k'",
+  { desc = "Stop Selection & Up", expr = true, silent = true }
+)
+map(
+  { "s" },
+  "<Home>",
+  "&wrap == 1 ? '<C-O><Esc>g0' : '<C-O><Esc>0'",
+  { desc = "Home", expr = true, silent = true }
+)
+map(
+  { "s" },
+  "<End>",
+  "&wrap == 1 ? '<C-O><Esc>g$' : '<C-O><Esc>$'",
+  { desc = "End", expr = true, silent = true }
+)
+
+map(
+  { "s" },
+  "<PageDown>",
+  "<Esc><C-f>",
+  { noremap = true, silent = true, desc = "Stop Selection & PageDown" }
+)
+-- SAVVY: <Shift-PageUp> does not work if already scrolled to the
+-- top of the buffer (though <Shift-PageDown> works at the bottom).
+-- - USAGE: Try <Shift-Ctrl-PageUp> or <Shift-Ctrl-Home> instead.
+-- INERT: Try to fix this.
+-- - E.g., if first line visible, select to buffer start.
+map(
+  { "s" },
+  "<PageUp>",
+  "<Esc><C-b>",
+  { noremap = true, silent = true, desc = "Stop Selection & PageUp" }
+)
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

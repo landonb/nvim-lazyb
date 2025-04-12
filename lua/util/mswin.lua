@@ -22,8 +22,6 @@
 ---@class lazyb.util.mswin
 local M = {}
 
-local map = vim.keymap.set
-
 local ctrl_keys = require("util.ctrl2pua-keys")
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -34,6 +32,7 @@ local ctrl_keys = require("util.ctrl2pua-keys")
 --     maybe <C-BS>, <C-Del>, etc.
 --     - Maybe also: <C-Left|Right> <C-M-Left|Right>
 --   - Incl. alt_select_motion.vim: <C-S-Left|Right>
+--   - Incl. util/shifted.lua.
 -- - Exclude the <C-e> map, which depends on external PUA injection.
 -- - Open Neovim Issues re:
 --   - 1.) When &selection=exclusive, snippet <Tab> selects one
@@ -216,7 +215,7 @@ function M.setup()
   --   snippet inserts the raw snippet, a newline, and an underscore,
   --   and it won't let you <Tab> between snippet stops).
   --   - In lieu of "stopsel", we'll wire smap bindings to
-  --     stop selecting (see below).
+  --     stop selecting (see bottom of util/shifted.lua).
   -- - BWARE: And watch out for |'selection'| set to "exclusive"
   --   or it'll impair snippets (<Tab>bing to a snippet stop
   --   selects the snippet, but then typing to replace the
@@ -248,7 +247,8 @@ function M.setup()
     -- vim.snippet.jump (e.g., using <Tab>), which selects the next
     -- placeholder text, and then typing to replace the placeholder,
     -- it leaves the final character.
-    -- - So we'll set "exclusive" on demand in the smap commands.
+    -- - So we'll set "exclusive" on demand in the shifted smap commands
+    --   (see util/shifted.lua).
     -- - And we'll set "inclusive" on demand from the completion maps
     --   (e.g., on <Tab>; if using nvim-lazyb, see plugins/blink-cmp.lua).
     -- - ALERT: Note this means that |selection| will vary when used
@@ -313,21 +313,6 @@ function M.setup()
   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
   -- *** EMULATE "startsel,stopsel"
 
-  -- Start selection on shifted special keys, akin to "startsel".
-  -- - REFER: How shifted special keys normally work:
-  --   - <Shift-Left>/<Shift-Right> moves [count] words backward/forward,
-  --     same as |b|/|w|. (See also nvim-lazyb <Ctrl-Left/Right>.)
-  --   - <Shift-Up>/<Shift-Down> scrolls the window [count] pages up/down,
-  --     same as <PageUp>/<PageDown> and <Ctrl-B>/<Ctrl-F>.
-  --     (See also <Ctrl-D>/<Ctrl-U>, which scroll half a screen.)
-  --   - <Home>/<End>/<PageUp>/<PageDown> do nothing different with <Shift>.
-  -- - Considering that, enabling &keymodel and changing shifted special
-  --   key behavior doesn't make any functionality unavailable (e.g., you
-  --   can use <PageUp> or <Ctrl-B> instead of <Shift-Up>).
-  --
-  -- And stop selection on non-shifted special key, akin to "stopsel".
-  --
-  -- "Special keys" are the cursor keys, <End>, <Home>, <PageDown>, and <PageUp>.
   -- BUGGN: Adding "stopsel" to |keymodel| breaks completion.
   --
   -- - E.g., if you type "vim.tbl_contains<Tab>", nvim inserts:
@@ -356,132 +341,8 @@ function M.setup()
   -- behavior using smap bindings, defined in util/shifted.lua.
   vim.o.keymodel = "startsel"
 
-  -- FIXME: Dismiss completion menu before starting selection.
-  --
-  -- BUGGN: WEIRD: If the completion menu is showing and you begin
-  -- a selection, and then <PageUp>, it sends the cursor to the top
-  -- of the sign column!?
-  -- - And then you cannot move the cursor, but you can :wincmd
-  --   back to a real window.
-  -- - This *might* be a result of the blink bindings I'm developing.
-  --   - Still seems weird, like, how is this even possible?!
-  -- - You'll also see a blink.cmp trace:
-  --     Error executing vim.schedule lua callback:
-  --       ...zy/blink.cmp/lua/blink/cmp/completion/accept/preview.lua:30:
-  --         Cursor position outside buffer
-
-  map({ "s" }, "<Left>", "<Esc>h", { noremap = true, silent = true, desc = "Stop Selection & Left" })
-  map(
-    { "s" },
-    "<Right>",
-    "<Esc>l",
-    { noremap = true, silent = true, desc = "Stop Selection & Right" }
-  )
-  map(
-    { "s" },
-    "<Down>",
-    "&wrap == 1 ? '<C-O><Esc>gj' : '<C-O><Esc>j'",
-    { desc = "Stop Selection & Down", expr = true, silent = true }
-  )
-  map(
-    { "s" },
-    "<Up>",
-    "&wrap == 1 ? '<C-O><Esc>gk' : '<C-O><Esc>k'",
-    { desc = "Stop Selection & Up", expr = true, silent = true }
-  )
-  map(
-    { "s" },
-    "<Home>",
-    "&wrap == 1 ? '<C-O><Esc>g0' : '<C-O><Esc>0'",
-    { desc = "Home", expr = true, silent = true }
-  )
-  map(
-    { "s" },
-    "<End>",
-    "&wrap == 1 ? '<C-O><Esc>g$' : '<C-O><Esc>$'",
-    { desc = "End", expr = true, silent = true }
-  )
-
-  map(
-    { "s" },
-    "<PageDown>",
-    "<Esc><C-f>",
-    { noremap = true, silent = true, desc = "Stop Selection & PageDown" }
-  )
-  -- SAVVY: <Shift-PageUp> does not work if already scrolled to the
-  -- top of the buffer (though <Shift-PageDown> works at the bottom).
-  -- - USAGE: Try <Shift-Ctrl-PageUp> or <Shift-Ctrl-Home> instead.
-  -- INERT: Try to fix this.
-  -- - E.g., if first line visible, select to buffer start.
-  map(
-    { "s" },
-    "<PageUp>",
-    "<Esc><C-b>",
-    { noremap = true, silent = true, desc = "Stop Selection & PageUp" }
-  )
-
-  -- Ensure that Shift-selecting starts "exclusive" selection mode.
-  -- - Why? Otherwise you'll select one more than you prob. want.
-  --   - E.g., <Shift-Right> in Normal mode selects *two* characters,
-  --     and if you only want to select one character, you'll have to
-  --     <Shift-Right>, and then backup <Left> one.
-  --     - Or, if you <Shift-Down>, you'll select a line plus a char.
-  --       E.g., <Shift-Down> from the first column selects the
-  --       current line, and the first character from the next line.
-  --   - Note you'll notice a caret used in "exclusive" mode, and a
-  --     block cursor used in "inclusive" mode, so you'll at least
-  --     be able to see which |selection| mode is active.
-  --
-  -- DUNNO: I tried a different approach in an attempt to support
-  -- `vim.o.keymodel = ""`, but I couldn't get it to work properly.
-  -- - E.g.:
-  --     map({ "i" }, "<S-Down>", function()
-  --       vim.o.keymodel = ""
-  --       vim.o.selection = "exclusive"
-  --       -- DUNNO: This remains in Insert mode, despite the <C-g>.
-  --       -- - And then after it runs, <Esc> goes to Select mode...
-  --       vim.cmd([[exec "normal! vj\<C-g>"]])
-  --       -- I also tried `expr = true` and these:
-  --       --   return "<S-Down>"
-  --       --   return "vj\\<C-g>"
-  --       -- Nor did this kludgy approach work:
-  --       --   vim.defer_fn(function()
-  --       --     vim.cmd([[exec "normal! \<C-g>"]])
-  --       --   end, 1000)
-  --       -- See also |gh|, which should start Select mode... but
-  --       -- maybe not from Normal mode? Not sure how it works.
-  --       --   vim.cmd([[exec "normal! gh\<S-Down>"]])
-  --     end, {
-  --       noremap = true,
-  --       -- I tried with and without `silent = true`, but neither
-  --       -- makes the <C-g> work (I've got a comment elsewhere
-  --       -- that warns that `silent = true` leaves Insert map
-  --       -- in Insert mode until user presses another key).
-  --       silent = true,
-  --       desc = "Start Select mode Selection & Down",
-  --     })
-
-  -- FIXME: Missing <Shift-Ctrl-Home|End>
-
-  -- FIXME: Add CXREF to vim-select-mode-stopped-down and dubs_edit_juice bindings,
-  -- or maybe move herein...
-  -- - Maybe also relocate these maps to a new file.
-
-  -- FIXME: <Shift-Up|Down> don't select like <Up|Down> on wrapped line.
-  -- - MAYBE: Perhaps relocate <Down>, <Up>, <Home>, <End> w/ these maps in new file.
-
-  for _, key in ipairs({ "Left", "Right", "Down", "Up", "Home", "End", "PageDown", "PageUp" }) do
-    map({ "n", "i" }, "<S-" .. key .. ">", function()
-      vim.o.keymodel = "startsel"
-      vim.o.selection = "exclusive"
-      return "<S-" .. key .. ">"
-    end, {
-      expr = true,
-      noremap = true,
-      silent = true,
-      desc = "Start Select mode " .. key,
-    })
-  end
+  -- Define special and shifted-special smap commands.
+  require("util.shifted")
 
   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
   -- *** NEWLINE ALLOWANCE
