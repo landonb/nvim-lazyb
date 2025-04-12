@@ -168,6 +168,82 @@ map({ "v" }, "<M-S-Right>", "$", {
   desc = "Extend Selection to EOL",
 })
 
+-- ---------------------------------------------------------------------------
+-- Wire Ctrl-Shift-PageUp/-PageDown to Selecting from Cursor to Edge of Window
+-- ---------------------------------------------------------------------------
+
+-- REFER:
+-- - Built-in <Ctrl-PageUp|PageDown> does nothing in either mode.
+-- - Built-in <Shift-Ctrl-PageUp|PageDown> does nothing in Insert mode,
+--   but in Normal mode it starts Insert mode.
+-- - Built-in <Shift-Alt-PageUp|PageDown is same as <Shift-PageUp|PageDown>
+--   and selects text by the pageful.
+
+-- Much like how Ctrl-PageUp and Ctrl-PageDown move the cursor to the top of
+-- the window or to the bottom of the window, respectively, without changing
+-- the view, Ctrl-Shift-PageUp and Ctrl-Shift-PageDown select text from the
+-- cursor to the top or bottom of the window without shifting the view.
+-- - When selecting from Insert mode, use <C-G> to change from Visual to Select
+--   mode, so that if user uses arrow keys after, it stops the selection (though
+--   if you start a visual mode selection and use <C-S-PageUp|PageDown>, it'll
+--   stay in Visual mode, and then arrow keys will adjust the selection).
+
+-- Ctrl-Shift-PageUp selects from cursor to first line of window.
+map({ "n" }, "<C-S-PageUp>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "vH<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to PageUp",
+})
+
+map({ "i" }, "<C-S-PageUp>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "<C-O>vH<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to PageUp",
+})
+
+map({ "v" }, "<C-S-PageUp>", "H", {
+  noremap = true,
+  desc = "Extend Selection PageUp",
+})
+
+-- Ctrl-Shift-PageDown selects from cursor to last line of window.
+map({ "n" }, "<C-S-PageDown>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "vL<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to PageDown",
+})
+
+map({ "i" }, "<C-S-PageDown>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "<C-O>vL<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to PageDown",
+})
+
+map({ "v" }, "<C-S-PageDown>", "L", {
+  noremap = true,
+  desc = "Extend Selection PageDown",
+})
+
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 -- Stop selection on non-shifted special keys.
