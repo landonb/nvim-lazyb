@@ -1246,6 +1246,18 @@ end
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- An `imap <C-j>` that Joins, and that positions the cursor
+-- after what was the first line.
+-- - REFER: |i_CTRL-J| is same an <NL>, "Begin new line."
+-- - CALSO: |i_CTRL-M|, same as <CR>, "Begin new line."
+--   - <Ctrl-m> behaves the same as <Ctrl-j>.
+--   - So nothing really lost with this map; and it saves
+--     you a trip to Normal mode (or a tedious delete seq.).
+vim.keymap.set({ "i" }, "<C-j>", "<C-o>J", { desc = "Join" })
+
+-- -----------------------------------------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- CXREF: Optional user config:
 -- ~/.config/nvim_lazyb/lua/config/keymaps-client.lua
 pcall(function()
