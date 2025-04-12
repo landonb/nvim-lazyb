@@ -4,19 +4,27 @@
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- DEVEL: After making changes to this file, source it
+-- and nil'ify package.loaded[], then call setup. E.g.:
+--
+--   luafile %
+--   package.loaded['util.mswin'] = nil
+--   lua require('util.mswin').setup()
+--
+-- - REFER: The author's Neovim config defines a special <F9> map to
+--   source the current Lua file and to clear it from package.loaded[]:
+--
+--     https://github.com/landonb/nvim-lazyb/blob/XXXX/lua/config/keymaps.lua
+-- FIXME: Update prev. link once published.
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 ---@class lazyb.util.mswin
 local M = {}
 
 local map = vim.keymap.set
 
 local ctrl_keys = require("util.ctrl2pua-keys")
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
--- DEVEL: After making changes to this file, press <F9> to source
--- it and to nil'ify package.loaded[]. Then call setup:
---
---   lua require('util.mswin').setup()
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -35,27 +43,28 @@ local ctrl_keys = require("util.ctrl2pua-keys")
 --     from completion menu inserts raw snippet, a newline, and
 --     an underscore, and doesn't enter "Snippet mode" (what I
 --     call it; I'm not sure if it's technically another mode,
---     or how Neovim handles it internally).
---     - FIXME- Look for open issue, and open if none found.
+--     other than you can check |vim.snippet.active()|).
+--     - FIXME- Look for open issues, and open if none found.
 --       - MAYBE: Publish mswin.nvim and link from new Issue.
--- FTREQ: Move superfluous comments to git-commit and replace
--- with commit ref, then use plugin command to show commit
--- message in popup (like you see git-blame in popup via
--- :Gitsigns blame_line).
+-- FTREQ: Move superfluous comments to commit message and replace
+-- with commit ref, then use plugin command to show commit message
+-- in popup (like you see git-blame in popup via :Gitsigns blame_line).
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
--- THANX: After reading vim.api.nvim_paste help, I found usage ideas
--- from GH (re: how to call from map rhs):
+-- THANX: After reading |nvim_paste()| help, I found usage ideas
+-- from GH (re: how to call vim.api.nvim_paste from map rhs):
 --   https://github.com/HUAHUAI23/nvim64/blob/64fe13b5329d/runtime/lua/start42.lua#L13
 -- - BEGET: https://github.com/search?q=vim.api.nvim_paste&type=code
 -- - HSTRY: Vim's mswin.vim uses paste#Paste() (that we thankfully don't have to port):
 --   ${VIMRUNTIME:-/opt/homebrew/Cellar/neovim/HEAD-228fe50_1/share/nvim/runtime}/autoload/paste.vim
 -- - CALSO: nvim_put (like nvim_paste, but not dot-repeatable).
 
--- OPTIN: Set `reselect_after_paste = "visual"` to reselect what was pasted,
--- when in Visual mode (not Select mode). (Which is somewhat interesting
--- behavior, but I'm not sure there's a compelling reason to enable it.)
+-- OPTIN: Set `reselect_after_paste = "visual"` to reselect what was
+-- pasted in Visual mode (it's not wired for Select mode).
+-- - While this is somewhat interesting behavior, I'm not sure there's
+--   a compelling reason to enable it.
+--
 --  M.reselect_after_paste = "visual"
 M.reselect_after_paste = ""
 
@@ -82,7 +91,7 @@ M.reselect_after_paste = ""
 --     - Then yank it to the unnamed register: ""y
 --   - Press <Ctrl-V> and select another block.
 --     - Then yank it to a clipboard register: "+y or "*y
---   - Now check the reg type:
+--   - Now check the register types:
 --       echo getregtype('"') -- ^V5
 --       echo getregtype('+') -- V
 --       echo getregtype('*') -- V
@@ -194,6 +203,8 @@ end
 
 -- COPYD: The following fcn. is loosely transcribed from mswin.vim:
 -- ${VIMRUNTIME:-/opt/homebrew/var/homebrew/linked/neovim/share/nvim/runtime}/scripts/mswin.vim
+-- - "Loosely" because it very much deviates as well, but I've documented
+--   the differences.
 function M.setup()
   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
   -- *** SELECT BEHAVIOR
@@ -208,12 +219,13 @@ function M.setup()
   --     stop selecting (see below).
   -- - BWARE: And watch out for |'selection'| set to "exclusive"
   --   or it'll impair snippets (<Tab>bing to a snippet stop
-  --   selects the snippet, but typing to replace the placeholder
-  --   leaves its last character).
+  --   selects the snippet, but then typing to replace the
+  --   placeholder leaves its last character).
   --   - In lieu of setting |'selection'| globally, we'll set it
   --     on demand for the Shifted special key smap bindings.
   --     - Note you'll need to set on demand for the completion
-  --       bindings (in nvim-lazyb, see the blink.cmp config).
+  --       bindings (e.g., in author's nvim-lazyb config, see
+  --       the blink.cmp spec).
 
   -- ISOFF: See *BWARE* above re: "exclusive" impairs snippets.
   if false then
@@ -224,7 +236,7 @@ function M.setup()
     --   a line, it also deletes the first character from the second line.
     -- - When &selection=inclusive, if you <Shift-End> to select to the
     --   end of a line, then <BS> deletes the selection and also the
-    --   trailing newline (so it join next line with current line).
+    --   trailing newline (so it joins the next line to the current line).
     --
     -- AHINT: If you see a block cursor, the character thereunder
     -- *is part of the selection*:
@@ -232,8 +244,50 @@ function M.setup()
     --   the end of the selection.
     -- - When &selection=exclusive, you'll see a caret at the end.
     --
-    -- ISOFF: This causes snippet <Tab> then typing to replace the snippet
-    -- placeholder, but then it leaves the final character.
+    -- ISOFF: Setting selection=exclusive impairs snippet mode — after
+    -- vim.snippet.jump (e.g., using <Tab>), which selects the next
+    -- placeholder text, and then typing to replace the placeholder,
+    -- it leaves the final character.
+    -- - So we'll set "exclusive" on demand in the smap commands.
+    -- - And we'll set "inclusive" on demand from the completion maps
+    --   (e.g., on <Tab>; if using nvim-lazyb, see plugins/blink-cmp.lua).
+    -- - ALERT: Note this means that |selection| will vary when used
+    --   otherwise, such as during a Visual mode selection, depending
+    --   on the last on-demand setting.
+    --   - ALTHO: However, you probably can't really make a Select mode
+    --     selection that's *not* "exclusive" — the shifted-special key
+    --     maps (in util/shifted.lua) change to "exclusive" mode, and
+    --     the <2-LeftMouse> maps also change to "exclusive" mode.
+    --     - As far as I know, the only way to make an "inclusive"
+    --       Select mode selection is to `set selection=inclusive`,
+    --       then use `v` to make a Visual mode selection, and then
+    --       press <Ctrl-g> to toggle over to Select mode.
+    --     - I.e., in normal practice, whenever you make a Select mode
+    --       selection, the selection mode will be "exclusive".
+    --   - MAYBE/FTREQ: Watch for end of completion or snippet mode and
+    --     set selection=exclusive. (Which isn't trivial to do, I don't
+    --     think; i.e., there is no ModeChanged event for snippets.
+    --     Though we could check vim.snippet.active(), either via
+    --     polling, or after other events.)
+    --     - Alternatively, if user prefers "inclusive", we could
+    --       monitor end of Select mode instead, and change from
+    --       "exclusive" back to "inclusive".
+    --     - Though note that currently the selection mode will
+    --       only vary when user make a Visual selection...
+    --       - MAYBE/FTREQ: In which case, maybe we need to set
+    --         'selection' deliberately when 'v' or 'V' is used.
+    --         - Then instead of changing selection *after* Select
+    --           mode or Snippet mode, we change selection *before*
+    --           changing to Select, Visual or Snippet mode (which
+    --           we already do for Select and modes, so the only
+    --           missing piece is Visual mode; and then we don't
+    --           have to kludge a solution for monitoring Snippet
+    --           mode).
+    --         - LOPRI: This seems a little low priority for me,
+    --           because most Visual mode motions work the same
+    --           regardless of 'selection' mode (e.g., `ve` works
+    --           the same; although `vj` (or `v<Down>`) behaves
+    --           differently).
     vim.o.selection = "exclusive"
   end
 
@@ -274,28 +328,32 @@ function M.setup()
   -- And stop selection on non-shifted special key, akin to "stopsel".
   --
   -- "Special keys" are the cursor keys, <End>, <Home>, <PageDown>, and <PageUp>.
+  -- BUGGN: Adding "stopsel" to |keymodel| breaks completion.
   --
-  -- BUGGN: Adding "stopsel" to |keymodel| breaks completion!
   -- - E.g., if you type "vim.tbl_contains<Tab>", nvim inserts:
+  --
   --     vim.tbl_contains(t, value, opts?)
   --     _
-  --   (the raw completion item is inserted on the first line, and
-  --   an underscore on the second), and it doesn't enter snippet
-  --   mode (or whatever it's called).
-  -- - Without stopsel, you can start selection with <Shift>+motion,
-  --   e.g., <Shift-Right>, but then releasing <Shift> and pressing
-  --   just <Right> or <Left> modifies selection.
-  --   - However, <Up> or <Down> stops the selection, because the
-  --     LazyVim/nvim-lazyb maps (that react according to &wrap).
-  --   - vim.o.keymodel works with vim.o.selectmode, but setting latter
-  --     to "" doesn't fix this behavior.
+  --
+  --   I.e., the raw completion item is inserted on the first line,
+  --   an underscore is inserted on the second line, and Neovim does
+  --   not start snippet mode.
+  --
+  -- - Without "stopsel", you can start selection with <Shift>+special,
+  --   e.g., <Shift-Right>, but then releasing <Shift> and pressing just
+  --   <Right> or <Left> modifies the selection (extends or contracts it),
+  --   as opposed to stopping the selection (which is what "stopsel" does).
+  --
+  --   - Though note <Up> or <Down> will stop the selection, at least
+  --     in LazyVim or nvim-lazyb, because of the custom maps (that react
+  --     according to &wrap).
   --
   -- - Default: &keymodel=
   -- - mswin.vim:
   --     vim.o.keymodel = "startsel,stopsel"
   --
-  -- Because "stopsel" breaks snippets, omit it.
-  -- - We'll emulate its behavior using smap bindings, defined next.
+  -- Because "stopsel" breaks snippets, omit it. We'll emulate its
+  -- behavior using smap bindings, defined in util/shifted.lua.
   vim.o.keymodel = "startsel"
 
   -- FIXME: Dismiss completion menu before starting selection.
@@ -428,43 +486,47 @@ function M.setup()
   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
   -- *** NEWLINE ALLOWANCE
 
-  -- "backspace and cursor keys wrap to previous/next line"
+  -- From mswin.vim: "backspace and cursor keys wrap to previous/next line".
 
-  -- Default: &backspace=indent,eol,start
+  -- Default: &backspace=indent,eol,start (i.e., our setting is the same).
   vim.o.backspace = "indent,eol,start"
 
-  -- Allow <Left>/<Right> to change to prev/next line in Normal and
-  -- Visual modes ("<" and ">") and in Insert and Replace modes
-  -- ("[" and "]"). Note nvim docs suggest not enabling for "h" and
-  -- "l" keys (tho not sure why, perhaps to avoid unexpected behavior).
-  -- Default: &whichwrap=b,s
+  -- Allow <Left>/<Right> to change to prev/next line in Normal and Visual
+  -- modes ("<" and ">") and in Insert and Replace modes ("[" and "]").
+  -- - Note that Neovim help suggests not enabling for "h" and "l" keys
+  --   (though I'm not sure why, perhaps to avoid unexpected behavior?
+  --   also I'm sure some nvim-lazyb commands expect "h" and "l" to stop
+  --   at SOL/EOL).
+  -- - Default: &whichwrap=b,s
   vim.opt.whichwrap:append({ ["<"] = true, [">"] = true, ["["] = true, ["]"] = true })
 
   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
   -- *** CUT
 
-  -- Orig. mswin.vim: "backspace in Visual mode deletes selection".
+  -- From mswin.vim: "backspace in Visual mode deletes selection".
   -- - ISOFF: Don't set vmap <BS> because it conflicts with nvim-treesitter
   --   xmap <BS> aka M.node_decremental():
   --   - "Shrink selection to previous named node"
   --     ~/.local/share/nvim/lazy/nvim-treesitter/lua/nvim-treesitter/incremental_selection.lua @ 127
   -- - SAVVY: By default, <BS> is same as <h> and reduces selection by rightmost character.
-  -- If we did enable this feature:
-  -- - The simplest implementation:
+  -- If we did enable this feature, this would be the simplest implementation:
   --   vnoremap <BS> d
-  -- - ALTLY: Better yet, instead of "cut", make it a true delete.
+  -- - ALTLY: Better yet, instead of "cut", make vmap <BS> a true delete.
   --   - Note the x, d, c, and s commands copy to the unnamed register,
   --     and if you set clipboard=unnamedplus, they also copy to the
   --     system clipboard. Which makes mswin.vim's `vnoremap <BS> d`
-  --     behave like cut, not delete. This would make it like delete.
+  --     behave like cut, not delete. This would make it like delete:
   --   vnoremap <BS> "_d
 
-  -- Orig. mswin.vim: "CTRL-X and SHIFT-Del are Cut".
+  -- From mswin.vim: "CTRL-X and SHIFT-Del are Cut".
   vim.keymap.set({ "v" }, "<C-x>", '"+x', { silent = true, noremap = true, desc = "Clipboard Cut" })
   -- MAYBE: Should we omit <S-Del>?
   -- - I've never used it, but maybe it's muscle memory for some Windows users?
-  -- - Be default, <Shift-Delete> does nothing to Select/Visual selection.
+  -- - By default, <Shift-Delete> does nothing to Select/Visual selection.
   --   - So there's no harm adding this map.
+  --   - Though we don't add the corresponding <C-Insert> (copy) or <S-Insert>
+  --     (paste) maps (mainly because this author doesn't have an <Insert> key
+  --     on their keyboard).
   -- stylua: ignore
   vim.keymap.set({ "v" }, "<S-Del>", '"+x', { silent = true, noremap = true, desc = "Clipboard Cut" })
 
@@ -505,6 +567,10 @@ function M.setup()
   -- - But skip <S-Insert> (akin to <S-Del> and <C-Insert>).
   --
   -- REFER: Note that Neovide suggests similar maps, but they're
+  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+  -- *** COMMENTED BUT INADVISABLE: NEOVIDE SUGGESTED PASTE MAPS
+
+  -- REFER: Note that Neovide suggests some paste maps, but they're
   -- unsatisfactory for me.
   -- - CXREF: ~/.kit/rust/neovide/website/docs/faq.md @ 5
   -- - COPYD: From faq.md; comments are mine except for the one noted.
@@ -623,15 +689,27 @@ function M.setup()
     M.v_paste(vim.fn.mode(1))
   end, { silent = true, noremap = true, desc = "Clipboard Paste" })
 
+  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+  -- *** COMMENTED BUT INAPPLICABLE: ALT. PASTE MAPS
+
+  -- Orig. mswin.vim: "CTRL-V and SHIFT-Insert are Paste"
+  -- - But skip <S-Insert> (akin to <S-Del> and <C-Insert>).
+
   -- ISOFF: Because author would often accidentally press <Insert>, I got
   -- rid of it — I remapped <Insert> on my keyboard to <Delete> (also <Insert>
   -- changes to that weird replace mode that I've never found it necessary
   -- to use).
-  -- - Also this module only enables normal <C-X>/<C-C>/<C-V> cut/copy/paste,
-  --   and not the alternative MS Windows <S-Del>/<C-Insert>/<S-Insert> maps.
-  -- - So don't port these two maps from mswin.vim:
-  --  imap <S-Insert> <C-V>
-  --  vmap <S-Insert> <C-V>
+  -- - Also this module focuses on typical <C-X>/<C-C>/<C-V> cut/copy/paste,
+  --   and not the atypical MS Windows <S-Del>/<C-Insert>/<S-Insert> maps
+  --   (though it nonetheless wires <S-Del>, because that binding not wired
+  --   by default, so doesn't "cost" anything).
+  -- - But we don't port these two maps from mswin.vim (mostly because author
+  --   doesn't have an <Insert> key, and I don't want to test/support these):
+  --     imap <S-Insert> <C-V>
+  --     vmap <S-Insert> <C-V>
+
+  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+  -- *** COMMENTED BUT INAPPLICABLE: DISABLE AUTOSELECT
 
   -- LATER: Maybe enable this in Neovim once implemented, if necessary.
   -- - REFER: |nvim-missing|:
@@ -652,7 +730,7 @@ function M.setup()
   end
 
   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-  -- *** BLOCKWISE-VISUAL
+  -- *** START BLOCKWISE-VISUAL MODE
 
   -- "Use CTRL-Q to do what CTRL-V used to do"
   -- - Default: |CTRL-V| |blockwise-visual| "Start Visual mode blockwise."
