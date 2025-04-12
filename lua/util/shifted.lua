@@ -246,6 +246,12 @@ map({ "v" }, "<C-S-PageDown>", "L", {
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- CXREF: See related <Ctrl-Shift-Left|Right> maps
+-- (which also set selection=exclusive on demand):
+-- ~/.kit/nvim/landonb/vim-select-mode-stopped-down/autoload/embrace/alt_select_motion.vim
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- Stop selection on non-shifted special keys.
 --
 -- This emulates |'keymodel'|'s "stopsel", except we don't use "stopsel"
