@@ -336,6 +336,21 @@ end, {
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+map({ "i" }, "<LeftMouse>", function()
+  require("blink.cmp").hide()
+  vim.defer_fn(function()
+    require("blink.cmp").hide()
+  end, 200)
+  return "<LeftMouse>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Insert mode Click w/out Showing Completion",
+})
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- CXREF: See related <Ctrl-Shift-Left|Right> maps
 -- (which also set selection=exclusive on demand):
 -- ~/.kit/nvim/landonb/vim-select-mode-stopped-down/autoload/embrace/alt_select_motion.vim
