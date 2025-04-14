@@ -290,6 +290,52 @@ map({ "v" }, "<C-S-PageDown>", "L", {
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+map({ "n" }, "<C-S-Home>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "vgg0<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to Home",
+})
+
+map({ "i" }, "<C-S-Home>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "<C-O>vgg0<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to Home",
+})
+
+map({ "n" }, "<C-S-End>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "vG$<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to End",
+})
+
+map({ "i" }, "<C-S-End>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "<C-O>vG$<C-G>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Select mode to End",
+})
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- CXREF: See related <Ctrl-Shift-Left|Right> maps
 -- (which also set selection=exclusive on demand):
 -- ~/.kit/nvim/landonb/vim-select-mode-stopped-down/autoload/embrace/alt_select_motion.vim
