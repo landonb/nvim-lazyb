@@ -1258,6 +1258,16 @@ vim.keymap.set({ "i" }, "<C-j>", "<C-o>J", { desc = "Join" })
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- Just a friendly built-in command reminder.
+wk.add({
+  mode = { "v" },
+  "<C-g>",
+  desc = "Visual/Select mode toggle",
+})
+
+-- -----------------------------------------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- CXREF: Optional user config:
 -- ~/.config/nvim_lazyb/lua/config/keymaps-client.lua
 pcall(function()
