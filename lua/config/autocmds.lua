@@ -287,6 +287,65 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- CXREF: See :: :? :" :> :L bindings:
+-- ~/.kit/nvim/landonb/nvim-lazyb/lua/config/keymaps.lua @ 633
+-- ~/.kit/nvim/landonb/dubs_edit_juice/plugin/dubs_edit_juice.vim @ 1723
+vim.api.nvim_create_autocmd("FileType", {
+  group = M.group,
+  pattern = { "help", "vim", "lua", "rst", "markdown", "txt" },
+  callback = function()
+    wk.add({
+      mode = { "n" },
+      "<LocalLeader>?",
+      -- [[:<C-U><CR>gvy:call histadd('cmd', 'I ' .. @")<CR>:I <C-R>"<CR>]],
+      function()
+        -- SPIKE: Is there a way to restore cursor without using get_/set_cursor?
+        -- - E.g., using a built-in mark? (I tried |CTRL-O| but didn't work).
+        --   - REFER: |mark-motions| We could maybe use |m'| and |''|.
+        -- SAVVY: Because which-key window pops up, cannot use window ID 0
+        -- when calling nvim_win_set_cursor.
+        --   local winid = 0
+        local winid = vim.api.nvim_get_current_win()
+        local curpos = vim.api.nvim_win_get_cursor(winid)
+        -- Grab WORD under cursor.
+        local topic = vim.fn.expand("<cWORD>")
+        -- Remove |bars|, which Vim help syntax uses to reference topics.
+        -- - SAVVY: I don't think Lua supports pattern branches, e.g.,
+        --     local topic = cWORD:gsub("(^|\\||$)", "")
+        --   - REFER: |pattern|, also https://www.lua.org/pil/20.2.html
+        -- - SAVVY: gsub returns count as second arg, so cannot chain, e.g.,
+        --     local topic = cWORD:gsub("^|", ""):gsub("|$", "")
+        -- - We could restrict to pipes on string edges only, e.g.,
+        --   |topic| but not (|topic|):
+        --     topic = topic:gsub("^|", "")
+        --     topic = topic:gsub("|$", "")
+        --   but I don't think any help topic has literal bars (pipes) its
+        --   name (e.g., see |bar| or |bars|), so picking a looser cleanup
+        --   is more inclusive (and lets user put topic in parentheses or
+        --   brackets, e.g., e.g., [|topic|]).
+        topic = topic:gsub("^.*|(.*)|.*$", "%1")
+        if topic:len() > 0 then
+          -- SPIKE: Do we need to escape(topic, '"') ?
+          local success = pcall(function()
+            vim.cmd("help " .. topic)
+          end)
+          if success then
+            vim.fn.histadd("cmd", "help " .. topic)
+          else
+            print("Sorry, no help for topic “" .. topic .. "”")
+          end
+        end
+        -- Restore the cursor position.
+        vim.api.nvim_win_set_cursor(winid, curpos)
+      end,
+      buffer = true,
+      noremap = true,
+      desc = "::help |topic|",
+      icon = "",
+    })
+  end,
+})
+
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 vim.api.nvim_create_autocmd("FileType", {
