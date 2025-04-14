@@ -89,6 +89,35 @@ end
 --       desc = "Start Select mode Selection & Down",
 --     })
 
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+-- Ensure "exclusive" selection mode when making Visual selections.
+
+vim.keymap.set({ "n" }, "v", function()
+  vim.o.selection = "exclusive"
+  return "v"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Visual mode Charwise Exclusive",
+})
+
+vim.keymap.set({ "n" }, "V", function()
+  vim.o.selection = "exclusive"
+  return "V"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Start Visual mode Linewise Exclusive",
+})
+
+-- REFER: See util/mswin.lua for similar <Ctrl-q>
+-- map, "Start Visual mode Blockwise Exclusive".
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- ------------------------------------------------------------------
 -- Wire Alt-Shift-Left/-Right to Selecting from Cursor to End of Line
 -- ------------------------------------------------------------------

@@ -987,13 +987,27 @@ function M.setup()
   -- - Default: |CTRL-V| |blockwise-visual| "Start Visual mode blockwise."
   -- - Note that Normal mode <C-Q> already starts blockwise select in
   --   `nvim --noplugin` instance (though I didn't find it documented.)
-  --  noremap <C-Q> <C-V>
-  vim.keymap.set(
-    { "n", "v", "o" },
-    "<C-q>",
-    "<C-v>",
-    { silent = true, noremap = true, desc = "Start Visual mode blockwise" }
-  )
+  -- - Orig. Vim implementation:
+  --     noremap <C-Q> <C-V>
+  -- - Orig. Lua conversion:
+  --     vim.keymap.set(
+  --       { "n", "v", "o" },
+  --       "<C-q>",
+  --       "<C-v>",
+  --       { silent = true, noremap = true, desc = "Start Visual mode blockwise" }
+  --     )
+  -- - Now with "exclusive" selection mode:
+  vim.keymap.set({ "n", "v", "o" }, "<C-q>", function()
+    vim.o.selection = "exclusive"
+    return "<C-v>"
+  end, {
+    expr = true,
+    noremap = true,
+    silent = true,
+    desc = "Start Visual mode Blockwise Exclusive",
+  })
+
+  -- REFER: See util/shifted.lua for similar `v` and `V` re-maps.
 
   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
   -- *** SAVE
