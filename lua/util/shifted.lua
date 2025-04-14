@@ -91,6 +91,21 @@ end
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- Ensure "exclusive" selection mode when making double-click selection.
+-- - See util/mswin.lua for Insert mode 2-LeftMouse that similarly
+--   sets "exclusive" mode, but also updates state for the
+--   cut/copy/paste race condition kludges.
+vim.keymap.set({ "n" }, "<2-LeftMouse>", function()
+  -- vim.o.keymodel = "startsel"
+  vim.o.selection = "exclusive"
+  return "<2-LeftMouse>"
+end, {
+  expr = true,
+  noremap = true,
+  silent = true,
+  desc = "Double-Click Selects Exclusive",
+})
+
 -- Ensure "exclusive" selection mode when making Visual selections.
 
 vim.keymap.set({ "n" }, "v", function()
