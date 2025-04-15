@@ -40,26 +40,6 @@ end
 
 local opt = vim.opt
 
--- LazyVim disables wrap by default, which I don't generally mind
--- for most buffers
--- - But it's annoying in the snacks view, especially <Leader>n to
---   look at notification history, oftentimes I cannot read the
---   full error output, but have to move the cursor to the view
---   window and then scroll right.
-opt.wrap = true
-
--- A statusline for every window!
--- - LazyVim default:
---   opt.laststatus = 3 -- global statusline
-opt.laststatus = 2
-
--- Disable relative line numbers (also: <leader>uL)
---  opt.relativenumber = false
-
--- LazyVim enables cursorline. I've historically kept if off...
--- but we'll give it a whirl.
---  opt.cursorline = false
-
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 require("util.mswin").setup()
@@ -74,6 +54,23 @@ opt.clipboard = ""
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- |vim.o.conceallevel|
+--
+-- LazyVim <Leader>uc toggles Conceal Level, which defaults 2.
+--
+-- Except I find this makes Markdown and Vim help files more
+-- difficult to edit.
+
+opt.conceallevel = 0
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+-- LazyVim enables cursorline. I've historically kept if off...
+-- but we'll give it a whirl.
+--  opt.cursorline = false
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- Adjust :Gvdiffsplit behavior.
 -- ISOFF: I don't use :Gdiffsplit (I prefer Meld), and this option
 -- doesn't change any behavior (though I might be testing it wrong).
@@ -81,6 +78,18 @@ opt.clipboard = ""
 --   ~/.kit/nvim/DepoXy/start/vim-depoxy/plugin/set-diffopt-hiddenoff.vim
 --
 --  vim.opt.diffopt:append("hiddenoff")
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+-- A statusline for every window!
+-- - LazyVim default:
+--   opt.laststatus = 3 -- global statusline
+opt.laststatus = 2
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+-- Disable relative line numbers (also: <leader>uL)
+--  opt.relativenumber = false
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -109,14 +118,13 @@ opt.scrolloff = 0
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
--- |vim.o.conceallevel|
---
--- LazyVim <Leader>uc toggles Conceal Level, which defaults 2.
---
--- Except I find this makes Markdown and Vim help files more
--- difficult to edit.
-
-opt.conceallevel = 0
+-- LazyVim disables wrap by default, which I don't generally mind
+-- for most buffers
+-- - But it's annoying in the snacks view, especially <Leader>n to
+--   look at notification history, oftentimes I cannot read the
+--   full error output, but have to move the cursor to the view
+--   window and then scroll right.
+opt.wrap = true
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
