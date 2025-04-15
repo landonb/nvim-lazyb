@@ -106,6 +106,31 @@ opt.scrolloff = 0
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- Remove "folds" from |'sessionoptions'|, or reST files reopened on
+-- startup will appear folded, but with the first line of the header
+-- as the fold text, which is the overline border, e.g., every fold
+-- is a sequence of "###..." characters (because reSTfold only runs
+-- when you <F5> to reload folds).
+--
+-- - FIXME: FTREQ/MAYBE: Recalculate folds instead.
+--
+--   - SPIKE: Hook |SessionLoadPost| event and tell every reST buffer
+--     to recalculate its folds.
+--     - But can reSTfold recalculate without also folding?
+--       - I.e., so we maintain previous view.
+--       - Or, maybe recalc. folds, and then just open fold
+--         around cursor.
+--
+-- LazyVim default:
+--   opt.sessionoptions = {
+--     "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
+-- CXREF:
+-- ~/.local/share/nvim_lazyb/lazy/LazyVim/lua/lazyvim/config/options.lua @ 89
+
+opt.sessionoptions:remove({ "folds" })
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- ISOFF: At first I didn't necessarily like that new windows opened
 -- below — mostly I didn't necessarily like that help windows opened
 -- below.
