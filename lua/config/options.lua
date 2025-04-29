@@ -46,6 +46,10 @@ local opt = vim.opt
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- Don't automatically save all buffers on :! cmds, the :gr cmd, and others.
+opt.autowrite = false
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 -- Unset |'clipboard'|, otherwise Visual/Select mode
 -- <Del>, etc., overwrites clipboard registers.
