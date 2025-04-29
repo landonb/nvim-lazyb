@@ -38,11 +38,14 @@ end
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+require("util.mswin").setup()
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 local opt = vim.opt
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-require("util.mswin").setup()
 
 -- Unset |'clipboard'|, otherwise Visual/Select mode
 -- <Del>, etc., overwrites clipboard registers.
@@ -50,6 +53,9 @@ require("util.mswin").setup()
 -- - LazyVim default: clipboard = "unnamedplus" (unless vim.env.SSH_TTY).
 -- - We'll define our own <C-x>, <C-c>, <C-v>, etc., map commands which
 --   use the clipboard registers when appropriate (see util/mswin.lua).
+-- - CXREF:
+--   ~/.kit/nvim/landonb/nvim-lazyb/lua/util/mswin.lua
+--   ~/.kit/nvim/landonb/nvim-lazyb/lua/util/shifted.lua
 opt.clipboard = ""
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
