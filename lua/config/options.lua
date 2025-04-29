@@ -6,10 +6,10 @@
 
 -- Options are automatically loaded before lazy.nvim startup
 -- CXREF:
--- ~/.local/share/nvim/lazy/LazyVim/lua/lazyvim/config/options.lua
--- ~/.local/share/nvim/lazy/LazyVim/lua/lazyvim/config/init.lua
+--   ~/.local/share/nvim/lazy/LazyVim/lua/lazyvim/config/options.lua
+--   ~/.local/share/nvim/lazy/LazyVim/lua/lazyvim/config/init.lua
 -- REFER: Default options that are always set:
--- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
+--   https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
