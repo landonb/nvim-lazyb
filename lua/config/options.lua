@@ -70,6 +70,11 @@ opt.clipboard = ""
 --
 -- Except I find this makes Markdown and Vim help files more
 -- difficult to edit.
+-- - REFER: The LazyVim Markdown extras force conceallevel=3,
+--   which you can toggle via <Leader>um (not <Leader>uc).
+--   - CXREF:
+--     ~/.local/share/nvim_lazyb/lazy/LazyVim/lua/lazyvim/plugins/extras/lang/markdown.lua
+--     ~/.local/share/nvim_lazyb/lazy/render-markdown.nvim/lua/render-markdown/init.lua
 
 opt.conceallevel = 0
 
