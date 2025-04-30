@@ -466,8 +466,10 @@ vim.keymap.set(
 wk.add({
   {
     mode = { "n" },
-    { "<S-C-D>", desc = "Scroll Window Upwards (like <C-U>)" }, -- <C-S-D>
-    { "<S-C-U>", desc = "Scroll Window Downwards (like <C-D>)" }, -- <C-S-U>
+    -- BNDNG: <Shift-Ctrl-D> <C-S-D> <S-C-D>
+    { "<C-S-D>", desc = "Scroll Window Upwards (like <C-U>)" },
+    -- BNDNG: <Shift-Ctrl-U> <C-S-U> <S-C-U>
+    { "<C-S-U>", desc = "Scroll Window Downwards (like <C-D>)" },
   },
 })
 
@@ -664,7 +666,7 @@ wk.add({
     {
       mode = { "i" },
       alt_keys.lookup("B"),
-      desc = alt_keys.AltKeyDesc("Highlight word under cursor (sticky)", "<S-M-B>"),
+      desc = alt_keys.AltKeyDesc("Highlight word under cursor (sticky)", "<M-S-B>"),
     },
   },
 })
