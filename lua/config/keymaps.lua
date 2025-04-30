@@ -800,6 +800,21 @@ end, { desc = alt_keys.AltKeyDesc("Remove word under cursor", "<M-d>") })
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- CXREF:
+-- ~/.kit/nvim/landonb/dubs_edit_juice/plugin/dubs_edit_juice.vim @ 1655
+wk.add({
+  mode = { "n", "i" },
+  "<LocalLeader>dM",
+  "<cmd>TabMessage messages<CR>",
+  desc = ":TabMessage messages",
+})
+
+-- HSTRY/2025-02-10: Not sure why I haven't abbrev'd this 'til now.
+vim.cmd("cnoreabbrev TM TabMessage")
+
+-- -----------------------------------------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- FIXME: Use snippets instead.
 -- - SAVVY: Completion borks these iabbrev's.
 --   - ,u doesn't work at all.
@@ -825,16 +840,6 @@ vim.cmd(
 --   without space in normal text or code."
 -- DUNNO/2025-03-03: Like `,t` abbrev, doesn't work in nvim-lazyb (LavyVim)...??
 vim.cmd("inoreabbrev <expr> ,u system('uuidgen')->trim()->tolower()")
-
--- HSTRY/2025-02-10: Not sure why I haven't abbrev'd this 'til now.
-vim.cmd("cnoreabbrev TM TabMessage")
-
-wk.add({
-  mode = { "n", "i" },
-  "<LocalLeader>dM",
-  "<cmd>TabMessage messages<CR>",
-  desc = ":TabMessage messages",
-})
 
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
