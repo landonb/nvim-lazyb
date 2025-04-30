@@ -635,6 +635,10 @@ wk.add({
     --       mode maps maintain the absolute start,end cursor positions
     --       (so the logical selection shifts as you dedent/indent).
     --
+    -- REFER: |==| built-in fixes current line indentation.
+    -- - SAVVY: Or just save the buffer and let conform.nvim format it!
+    { mode = "i", "==", desc = "Fix current line indentation" },
+    --
     -- Finally, \d< completely removes leading whitespace (calls |:left|).
     -- - You're probably better off just calling |:left [indent]|,
     --   which lets you specify a common indent amount to use.
