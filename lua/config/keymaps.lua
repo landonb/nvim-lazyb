@@ -527,15 +527,16 @@ wk.add({
     { mode = "n", "<S-Tab>", desc = "Dedent Line" },
     { mode = "v", "<Tab>", desc = "Indent Selected" },
     { mode = "v", "<S-Tab>", desc = "Dedent Selected" },
-    -- BUGGN: Pressing "<" from which-key popup shows subset of non-<LocalLeader> maps.
-    -- - But the ">" which-key popup works, and just shows the one ">>" map.
-    { mode = "n", ">", desc = "Cursor-Friendly Indent" },
     { mode = "n", ">>", desc = "Cursor-Friendly Indent" },
-    { mode = "n", "<", desc = "Cursor-Friendly Dedent" },
     { mode = "n", "<<", desc = "Cursor-Friendly Dedent" },
     -- ISOFF/2025-03-04: See notes above re: which-key conflicts.
     --  { mode = "v", "<S-C-D>", desc = "Indent Selection" },
     --  { mode = "v", "<C-D>", desc = "Dedent Selection" },
+    -- Add which-key popup groups.
+    -- - BUGGN: The "<" group includes errant "å" (Alt-a char) sub-
+    --   group, labeled "+1 keymap", but I'm not sure what causes it.
+    { mode = "n", ">", desc = "Indent-related Commands" },
+    { mode = "n", "<", desc = "Dedent-related Commands" },
     -- CXREF: ~/.depoxy/ambers/home/.config/alacritty/alacritty.toml
     --   { key = "D", mods = "Control|Shift", chars = "\uE003" },
     -- NOTED: This one *does not* cause errant "î" which-key entry
