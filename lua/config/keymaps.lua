@@ -593,8 +593,8 @@ wk.add({
     -- HSTRY/2025-03-03: Why not make a few more window commands available from Insert mode...
     { mode = { "n", "i" }, "<localleader>z", group = "Fold and Scroll Commands" },
     { mode = { "n", "i" }, "<localleader>zz", desc = "Redraw Line at Window Center" },
-    { mode = { "n", "i" }, "<localleader>zt", desc = "Redraw Line &scrolloff from Top" },
     { mode = { "n", "i" }, "<localleader>zb", desc = "Redraw Line &scrolloff from Bottom" },
+    { mode = { "n", "i" }, "<localleader>zt", desc = "Redraw Line &scrolloff from Top" },
     { mode = { "n", "i" }, "<localleader>za", desc = "Toggle the Fold Under the Cursor" },
   },
   {
