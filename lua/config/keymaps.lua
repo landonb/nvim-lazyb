@@ -219,6 +219,7 @@ end, { desc = "Transpose Characters", noremap = true, silent = true })
 --   \eT": transpose-words
 -- https://github.com/DepoXy/dot-inputrc#🎛️
 -- - Though note we're not adding transpose-words.
+--   - MAYBE: If we did, <C-S-T> is also available.
 
 map({ "i" }, alt_keys.lookup("t"), function()
   require("util.edit-juice.transpose").transpose_characters()
@@ -424,9 +425,32 @@ wk.add({
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
--- <S-C-D>: Add Normal mode <C-D> complement at <S-C-D> (does the opposite — Scrolls up).
--- BUGGN: Causes "î" which-key entry (see notes above).
--- BNDNG: <Shift-Ctrl-D>
+-- SAVVY: Note that Normal mode <C-D>/<C-S-D> is scroll down/up
+-- and does *not* match Insert mode dedent/indent behavior; and
+-- that visual modes <C-D>/<C-S-D> extends selection down/up.
+
+-- <C-S-D>: Add Normal mode <C-D> complement at <C-S-D>
+-- (which does the opposite — it Scrolls up).
+-- BUGGN: This map creates an errant "î" which-key entry.
+-- SAVVY: Note we cannot also enable <C-S-D> in the which-key window,
+-- because which-key closes the popup before calling feedkeys.
+-- - Specifically, I was hoping something like this might work:
+--     local View = require("which-key.view")
+--     if View.valid() then View.scroll(false) else ... end
+--   - The only way we could maybe get it to work is to set
+--     which-key.opts.scroll_up = ctrl_keys.lookup("D"), so
+--     that which-key doesn't close the view when that key
+--     is pressed; and then to use vim.on_key(), perhaps, to
+--     check if which-key *is not* visible, and then to fallback
+--     scroll-up in the currect buffer. (Or we could monitor keys
+--     like which-keys, though I'm not entirely clear how which-key
+--     does its magic; it only uses on_key() for debugging,
+--     and it's not clear it uses autocmd for the automatic
+--     triggers; it maybe uses |uv_timer_t| (uv.new_timer,
+--     timer:start) to poll for keys, but I'm not confident
+--     about that... and I'm not sure why I can't suss how the
+--     plugin really works! How magical can it really be...?).
+-- BNDNG: <Shift-Ctrl-D> <C-S-D> <>
 vim.keymap.set(
   { "n", "v" },
   ctrl_keys.lookup("D"),
@@ -529,9 +553,6 @@ wk.add({
     { mode = "v", "<S-Tab>", desc = "Dedent Selected" },
     { mode = "n", ">>", desc = "Cursor-Friendly Indent" },
     { mode = "n", "<<", desc = "Cursor-Friendly Dedent" },
-    -- ISOFF/2025-03-04: See notes above re: which-key conflicts.
-    --  { mode = "v", "<S-C-D>", desc = "Indent Selection" },
-    --  { mode = "v", "<C-D>", desc = "Dedent Selection" },
     -- Add which-key popup groups.
     -- - BUGGN: The "<" group includes errant "å" (Alt-a char) sub-
     --   group, labeled "+1 keymap", but I'm not sure what causes it.
@@ -568,6 +589,52 @@ wk.add({
       end,
       desc = "Indent Line (like built-in C-T) (C-S-D)",
     },
+    -- ISOFF: which-key doesn't show the built-in i_CTRL-D map
+    -- (which indents), but we also cannot define the map because
+    -- it breaks <Ctrl-D> from scrolling down in which-key, e.g.,
+    --   { mode = "i", "<C-D>", desc = "Dedent Line" },
+    -- - SAVVY: You can view the Insert mode which-key popup
+    --   by pressing <Ctrl-R> from Insert mode, then <BS>.
+    -- ISOFF: I considered also making select mode maps for <C-D>
+    -- and <C-S-D>. But these also break which-key scrolling.
+    -- - So not these:
+    --     { mode = "v", "<C-S-D>", desc = "Indent Selection" },
+    --     { mode = "v", "<C-D>", desc = "Dedent Selection" },
+    -- - Currently, built-in <C-D> from either select mode extends
+    --   the selection downwards (and our vmap <C-S-D> (defined above)
+    --   extends it upwards).
+    --   - So select mode <C-S-D>/<C-D> is like their Normal mode
+    --     counterparts, and not like their Insert mode maps.
+    --   - Note that the Select mode behavior doesn't fit the normal
+    --     Select mode pattern — usually the only way to extend the
+    --     selection in Select mode is to use a shifted special key.
+    --     (Well, I guess <C-S-D> is technically shifted, but it's
+    --     not a special key; and <C-D> is neither. Which is why I
+    --     considerd making Select mode <C-S-D>/<C-D> indent/dedent
+    --     instead. Oh well, can't win 'em all.)
+    -- - The issue is that which-key monitors input, and if the
+    --   input matches an existing map, it closes the which-key
+    --   popup and calls feedkeys(). So there's no way to, e.g.,
+    --   check if which-key is showing and then to tell the
+    --   which-key view to scroll, because the view will have been
+    --   closed before our map runs.
+    --   - There might be a solution using vim.on_key() to monitor
+    --     keypresses (e.g., if <C-D>/<C-S-D> pressed and which-key
+    --     not visible, then dedent/indent), but it also doesn't
+    --     seem worth the effort to try to make this work (and
+    --     there's no guarantee we'd get it to work, anyway).
+    --   - So instead, use <Tab>/<Shift-Tab> to indent/dedent from
+    --     Visual or Select mode; use ">" or "<" from Visual mode
+    --     (but not Select mode); use <Shift-Ctrl-D>/<Ctrl-D> from
+    --     Insert mode; or use ">>" or "<<" from Normal mode.
+    --     - Note that using <Shift-Ctrl-D>/<Ctrl-D> from a select
+    --       mode extends the selection upwards/downwards by half
+    --       the window.
+    --     - Also note that Normal and Insert mode dedent/indent
+    --       maintains the relative cursor position, but the select
+    --       mode maps maintain the absolute start,end cursor positions
+    --       (so the logical selection shifts as you dedent/indent).
+    --
     -- Finally, \d< completely removes leading whitespace (calls |:left|).
     -- - You're probably better off just calling |:left [indent]|,
     --   which lets you specify a common indent amount to use.
