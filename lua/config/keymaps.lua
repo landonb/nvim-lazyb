@@ -443,7 +443,7 @@ end, { desc = "Indent (C-S-D)" })
 -- BUGGN: Causes "î" which-key entry (see notes above).
 -- BNDNG: <Shift-Ctrl-D>
 vim.keymap.set(
-  { "n" },
+  { "n", "v" },
   ctrl_keys.lookup("D"),
   "<C-U>",
   { desc = "Scroll Window Upwards (like C-U) (C-S-D)" }
@@ -456,7 +456,7 @@ vim.keymap.set(
 -- BUGGN: Causes errant "î" which-key entry (see notes above).
 -- BNDNG: <Shift-Ctrl-U> <C-S-U> <>
 vim.keymap.set(
-  { "n" },
+  { "n", "v" },
   ctrl_keys.lookup("U"),
   "<C-D>",
   { desc = "Scroll Window Downwards (like C-D) (C-S-U)" }
