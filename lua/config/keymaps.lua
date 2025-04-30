@@ -445,7 +445,7 @@ end, { desc = "Indent (C-S-D)" })
 vim.keymap.set(
   { "n" },
   ctrl_keys.lookup("D"),
-  "<C-U><CR>",
+  "<C-U>",
   { desc = "Scroll Window Upwards (like C-U) (C-S-D)" }
 )
 
