@@ -224,6 +224,8 @@ map({ "i" }, alt_keys.lookup("t"), function()
   require("util.edit-juice.transpose").transpose_characters()
 end, { desc = alt_keys.AltKeyDesc("Transpose Characters", "<M-t>"), noremap = true, silent = true })
 
+-- BUGGN: which-keys shows as "Tt" (to see the popup, from
+-- Insert mode, press <Ctrl-R>, then <BS>).
 map({ "i" }, "<T-t>", function()
   require("util.edit-juice.transpose").transpose_characters()
 end, { desc = "Transpose Characters", noremap = true, silent = true })
@@ -298,7 +300,7 @@ end, { desc = "Delete Back Word" })
 
 vim.keymap.set({ "s" }, "<C-W>", "<Delete>", { desc = "Delete Selected Text" })
 
--- BNDNG: <Shift-Ctrl-W> <C-S-W> <S-C-W>
+-- BNDNG: <Shift-Ctrl-W> <C-S-W>
 vim.keymap.set(
   { "n", "i" },
   ctrl_keys.lookup("W"),
@@ -345,7 +347,7 @@ end, { desc = "Delete Back Line" })
 --   endif
 -- CXREF: ~/.depoxy/ambers/home/.config/alacritty/alacritty.toml
 --   { key = "W", mods = "Control|Shift", chars = "\uE016" },
--- BUGGN: Causes "î" which-key entry (see notes above).
+-- BUGGN: Causes errant "î" which-key entry (see notes above).
 -- BNDNG: <Shift-Alt-W> <M-S-W> <S-M-W>
 vim.keymap.set({ "n", "i" }, alt_keys.lookup("W"), function()
   require("util.edit-juice.delete-backward").delete_back_line()
@@ -404,7 +406,7 @@ vim.keymap.set({ "n", "i" }, "<C-S-Del>", function()
   require("util.edit-juice.delete-forward").Del2EndOfWsAz09OrPunct(1)
 end, { desc = "Delete Forward Line" })
 
--- 2011.02.01 Doing same [as Ctrl-Shift-Delete] for Alt-Delete.
+-- HSTRY/2011-02-01: Doing same [as Ctrl-Shift-Delete] for Alt-Delete.
 vim.keymap.set({ "n", "i" }, "<M-Del>", function()
   require("util.edit-juice.delete-forward").Del2EndOfWsAz09OrPunct(1)
 end, { desc = "Delete Forward Line" })
@@ -447,12 +449,12 @@ vim.keymap.set(
   { desc = "Scroll Window Upwards (like C-U) (C-S-D)" }
 )
 
--- <S-C-U>: Add Normal mode <C-U> complement at <S-C-U> (does the opposite — Scrolls down).
--- - ISOFF/2025-03-03: See comment above: Leave vmap <C-D>/<S-C-D> for which-key.
+-- <C-S-U>: Add Normal mode <C-U> complement at <C-S-U> (does the opposite — Scrolls down).
+-- - ISOFF/2025-03-03: See comment above: Leave vmap <C-D>/<C-S-D> for which-key.
 --   vim.keymap.set({ "n", "v" }, ctrl_keys.lookup("U"), "<C-D>",
 --     { desc = "Scroll Window Downwards (like C-D) (C-S-U)" })
--- BUGGN: Causes "î" which-key entry (see notes above).
--- BNDNG: <Shift-Ctrl-U>
+-- BUGGN: Causes errant "î" which-key entry (see notes above).
+-- BNDNG: <Shift-Ctrl-U> <C-S-U> <>
 vim.keymap.set(
   { "n" },
   ctrl_keys.lookup("U"),
@@ -460,6 +462,7 @@ vim.keymap.set(
   { desc = "Scroll Window Downwards (like C-D) (C-S-U)" }
 )
 
+-- As defined by dubs_edit_juice.vim (see big wk.add() section below).
 wk.add({
   {
     mode = { "n" },
@@ -675,7 +678,8 @@ wk.add({
 --    ~/.local/share/nvim_lazyb/lazy/LazyVim/lua/lazyvim/config/keymaps.lua
 -- - BECUZ: In Select mode, rather than replacing selected text,
 --   ">" and "<" indent/dedent instead.
---   - The xmap behavior is more respectful of how Select mode should behave.
+--   - The xmap behavior is more respectful of how Select mode should behave
+--     (which is that non-special keys are inserted literally).
 vim.keymap.del("v", "<")
 vim.keymap.del("v", ">")
 -- Without the desc's, which-keys shows: "Indent left", "Indent right".
