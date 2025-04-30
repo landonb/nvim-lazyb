@@ -536,7 +536,6 @@ wk.add({
     { "<M-Right>", desc = "Move Cursor to End of Line", mode = { "n", "i", "v" } },
     { "<M-F12>", desc = "Move to Middle Line & Start Insert", mode = { "n", "i", "v" } },
     { "<localleader>dt", desc = "Toggle Tab Highlighting" },
-    { "<localleader>d<", desc = "Left Justify Line", icon = "󰞓" },
   },
   {
     { mode = "n", "<Tab>", desc = "Indent Line" },
@@ -552,6 +551,13 @@ wk.add({
     -- ISOFF/2025-03-04: See notes above re: which-key conflicts.
     --  { mode = "v", "<S-C-D>", desc = "Indent Selection" },
     --  { mode = "v", "<C-D>", desc = "Dedent Selection" },
+    -- Finally, \d< completely removes leading whitespace (calls |:left|).
+    -- - You're probably better off just calling |:left [indent]|,
+    --   which lets you specify a common indent amount to use.
+    -- - FTREQ/INERT: A better option might be to automatically detect
+    --   the [indent] using the line with the least amount of indent.
+    --   But I really don't use this function, so really don't care.
+    { mode = { "n", "i", "v" }, "<localleader>d<", desc = "Left Justify Line", icon = "󰞓" },
   },
   {
     mode = { "n", "i" },
