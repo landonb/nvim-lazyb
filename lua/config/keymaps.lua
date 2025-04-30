@@ -423,65 +423,6 @@ wk.add({
   icon = "󰛲",
 })
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
--- SAVVY: Note that Normal mode <C-D>/<C-S-D> is scroll down/up
--- and does *not* match Insert mode dedent/indent behavior; and
--- that visual modes <C-D>/<C-S-D> extends selection down/up.
-
--- <C-S-D>: Add Normal mode <C-D> complement at <C-S-D>
--- (which does the opposite — it Scrolls up).
--- BUGGN: This map creates an errant "î" which-key entry.
--- SAVVY: Note we cannot also enable <C-S-D> in the which-key window,
--- because which-key closes the popup before calling feedkeys.
--- - Specifically, I was hoping something like this might work:
---     local View = require("which-key.view")
---     if View.valid() then View.scroll(false) else ... end
---   - The only way we could maybe get it to work is to set
---     which-key.opts.scroll_up = ctrl_keys.lookup("D"), so
---     that which-key doesn't close the view when that key
---     is pressed; and then to use vim.on_key(), perhaps, to
---     check if which-key *is not* visible, and then to fallback
---     scroll-up in the currect buffer. (Or we could monitor keys
---     like which-keys, though I'm not entirely clear how which-key
---     does its magic; it only uses on_key() for debugging,
---     and it's not clear it uses autocmd for the automatic
---     triggers; it maybe uses |uv_timer_t| (uv.new_timer,
---     timer:start) to poll for keys, but I'm not confident
---     about that... and I'm not sure why I can't suss how the
---     plugin really works! How magical can it really be...?).
--- BNDNG: <Shift-Ctrl-D> <C-S-D> <>
-vim.keymap.set(
-  { "n", "v" },
-  ctrl_keys.lookup("D"),
-  "<C-U>",
-  { desc = "Scroll Window Upwards (like C-U) (C-S-D)" }
-)
-
--- <C-S-U>: Add Normal mode <C-U> complement at <C-S-U> (does the opposite — Scrolls down).
--- - ISOFF/2025-03-03: See comment above: Leave vmap <C-D>/<C-S-D> for which-key.
---   vim.keymap.set({ "n", "v" }, ctrl_keys.lookup("U"), "<C-D>",
---     { desc = "Scroll Window Downwards (like C-D) (C-S-U)" })
--- BUGGN: Causes errant "î" which-key entry (see notes above).
--- BNDNG: <Shift-Ctrl-U> <C-S-U> <>
-vim.keymap.set(
-  { "n", "v" },
-  ctrl_keys.lookup("U"),
-  "<C-D>",
-  { desc = "Scroll Window Downwards (like C-D) (C-S-U)" }
-)
-
--- As defined by dubs_edit_juice.vim (see big wk.add() section below).
-wk.add({
-  {
-    mode = { "n" },
-    -- BNDNG: <Shift-Ctrl-D> <C-S-D> <S-C-D>
-    { "<C-S-D>", desc = "Scroll Window Upwards (like <C-U>)" },
-    -- BNDNG: <Shift-Ctrl-U> <C-S-U> <S-C-U>
-    { "<C-S-U>", desc = "Scroll Window Downwards (like <C-D>)" },
-  },
-})
-
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -811,6 +752,66 @@ wk.add({
 
 -- HSTRY/2025-02-10: Not sure why I haven't abbrev'd this 'til now.
 vim.cmd("cnoreabbrev TM TabMessage")
+
+-- -----------------------------------------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+-- SAVVY: Note that Normal mode <C-D>/<C-S-D> is scroll down/up
+-- and does *not* match Insert mode dedent/indent behavior; and
+-- that visual modes <C-D>/<C-S-D> extends selection down/up.
+
+-- <C-S-D>: Add Normal mode <C-D> complement at <C-S-D>
+-- (which does the opposite — it Scrolls up).
+-- BUGGN: This map creates an errant "î" which-key entry.
+-- SAVVY: Note we cannot also enable <C-S-D> in the which-key window,
+-- because which-key closes the popup before calling feedkeys.
+-- - Specifically, I was hoping something like this might work:
+--     local View = require("which-key.view")
+--     if View.valid() then View.scroll(false) else ... end
+--   - The only way we could maybe get it to work is to set
+--     which-key.opts.scroll_up = ctrl_keys.lookup("D"), so
+--     that which-key doesn't close the view when that key
+--     is pressed; and then to use vim.on_key(), perhaps, to
+--     check if which-key *is not* visible, and then to fallback
+--     scroll-up in the currect buffer. (Or we could monitor keys
+--     like which-keys, though I'm not entirely clear how which-key
+--     does its magic; it only uses on_key() for debugging,
+--     and it's not clear it uses autocmd for the automatic
+--     triggers; it maybe uses |uv_timer_t| (uv.new_timer,
+--     timer:start) to poll for keys, but I'm not confident
+--     about that... and I'm not sure why I can't suss how the
+--     plugin really works! How magical can it really be...?).
+-- BNDNG: <Shift-Ctrl-D> <C-S-D> <>
+vim.keymap.set(
+  { "n", "v" },
+  ctrl_keys.lookup("D"),
+  "<C-U>",
+  { desc = "Scroll Window Upwards (like C-U) (C-S-D)" }
+)
+
+-- <C-S-U>: Add Normal mode <C-U> complement at <C-S-U> (does the opposite — Scrolls down).
+-- - ISOFF/2025-03-03: See comment above: Leave vmap <C-D>/<C-S-D> for which-key.
+--   vim.keymap.set({ "n", "v" }, ctrl_keys.lookup("U"), "<C-D>",
+--     { desc = "Scroll Window Downwards (like C-D) (C-S-U)" })
+-- BUGGN: Causes errant "î" which-key entry (see notes above).
+-- BNDNG: <Shift-Ctrl-U> <C-S-U> <>
+vim.keymap.set(
+  { "n", "v" },
+  ctrl_keys.lookup("U"),
+  "<C-D>",
+  { desc = "Scroll Window Downwards (like C-D) (C-S-U)" }
+)
+
+-- As defined by dubs_edit_juice.vim (see big wk.add() section below).
+wk.add({
+  {
+    mode = { "n" },
+    -- BNDNG: <Shift-Ctrl-D> <C-S-D> <S-C-D>
+    { "<C-S-D>", desc = "Scroll Window Upwards (like <C-U>)" },
+    -- BNDNG: <Shift-Ctrl-U> <C-S-U> <S-C-U>
+    { "<C-S-U>", desc = "Scroll Window Downwards (like <C-D>)" },
+  },
+})
 
 -- -----------------------------------------------------------------
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
