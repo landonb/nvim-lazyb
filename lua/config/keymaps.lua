@@ -537,6 +537,22 @@ wk.add({
     --   group, labeled "+1 keymap", but I'm not sure what causes it.
     { mode = "n", ">", desc = "Indent-related Commands" },
     { mode = "n", "<", desc = "Dedent-related Commands" },
+    -- Insert mode <Shift-Ctrl-D> indents (and complements
+    -- the built-in |i_CTRL-D| dedent behavior).
+    -- - Note that |i_CTRL-D|'s built-in complement is
+    --   |i_CTRL-T|, but nvim-lazyb assigns that to transpose.
+    --   - MAYBE: Note that Insert mode <C-S-T> still runs the
+    --     built-in <C-T> map (indent), which has no complement
+    --     (b/c <C-T> remapped to transpose), so maybe define a
+    --     custom <C-S-T> map — but for what? (Transpose Words?)
+    -- - Note that Normal/select mode <C-S-D> scrolls upwards,
+    --   which provides parity with built-in CTRL-D scroll
+    --   downwards behavior; see its keymap.set(), above, and
+    --   the comments immediately following this defintion.
+    -- CXREF: ~/.kit/nvim/landonb/dubs_edit_juice/plugin/dubs_edit_juice.vim
+    --   inoremap <C-S-D> <C-O>:call CursorFriendlyIndent(1)<CR>
+    -- BNDNG: <Shift-Ctrl-D> <C-S-D> <>
+    { mode = "i", "<C-S-D>", desc = "Indent Line" },
     -- CXREF: ~/.depoxy/ambers/home/.config/alacritty/alacritty.toml
     --   { key = "D", mods = "Control|Shift", chars = "\uE003" },
     -- NOTED: This one *does not* cause errant "î" which-key entry
