@@ -106,6 +106,12 @@ if true then
         -- SPIKE: Why does this cause diagnostics?:
         -- ---@type lspconfig.options
         servers = {
+          -- REFER:
+          -- https://clangd.llvm.org/installation
+          -- - SAVVY: Needs `compile_commands.json`
+          clangd = {},
+          -- Or, with options, e.g.:
+          --   clangd = { '--background-index', '--clang-tidy', '--log=verbose'},
           -- pyright will be automatically installed with mason and loaded with lspconfig
           pyright = {},
           -- tsserver will be automatically installed with mason and loaded with lspconfig
