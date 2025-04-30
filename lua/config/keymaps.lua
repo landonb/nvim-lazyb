@@ -424,21 +424,6 @@ wk.add({
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
--- CXREF: ~/.kit/nvim/landonb/dubs_edit_juice/plugin/dubs_edit_juice.vim
---   inoremap <S-C-D> <C-O>:call CursorFriendlyIndent(1)<CR>
---   inoremap <S-M-D> <C-O>:call CursorFriendlyIndent(1)<CR>
--- CXREF: ~/.depoxy/ambers/home/.config/alacritty/alacritty.toml
---   { key = "D", mods = "Control|Shift", chars = "\uE003" },
--- - I.e., not this:
---   vim.keymap.set({ "i", "v" }, ctrl_keys.lookup("D"), function()
--- - From Select mode, use <Tab>/<Shift-Tab> to indent/dedent.
--- BUGGN: This one *does not* cause "î" which-key entry (unlike similar
--- user space characters that do), though probably because Insert mode only.
--- BNDNG: <Shift-Ctrl-D> aka <>
-vim.keymap.set({ "i" }, ctrl_keys.lookup("D"), function()
-  require("util.edit-juice.indent").cursor_friendly_indent(1)
-end, { desc = "Indent (C-S-D)" })
-
 -- <S-C-D>: Add Normal mode <C-D> complement at <S-C-D> (does the opposite — Scrolls up).
 -- BUGGN: Causes "î" which-key entry (see notes above).
 -- BNDNG: <Shift-Ctrl-D>
@@ -551,6 +536,21 @@ wk.add({
     -- ISOFF/2025-03-04: See notes above re: which-key conflicts.
     --  { mode = "v", "<S-C-D>", desc = "Indent Selection" },
     --  { mode = "v", "<C-D>", desc = "Dedent Selection" },
+    -- CXREF: ~/.depoxy/ambers/home/.config/alacritty/alacritty.toml
+    --   { key = "D", mods = "Control|Shift", chars = "\uE003" },
+    -- NOTED: This one *does not* cause errant "î" which-key entry
+    -- (unlike similar PUA characters that do), though Insert mode
+    -- which-key legend still includes errant "å" and "î" entries.
+    -- BNDNG: <Shift-Ctrl-D> <C-S-D> <>
+    {
+      mode = "i",
+      ctrl_keys.lookup("D"),
+      -- ALTLY: "<C-O>:call CursorFriendlyIndent(1)<CR>",
+      function()
+        require("util.edit-juice.indent").cursor_friendly_indent(1)
+      end,
+      desc = "Indent Line (like built-in C-T) (C-S-D)",
+    },
     -- Finally, \d< completely removes leading whitespace (calls |:left|).
     -- - You're probably better off just calling |:left [indent]|,
     --   which lets you specify a common indent amount to use.
