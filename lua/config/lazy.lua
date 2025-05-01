@@ -1,3 +1,7 @@
+-- vim:tw=0:ts=2:sw=2:et:ai:ft=lua
+-- Author: Landon Bouma <https://tallybark.com/>
+-- Project: https://github.com/landonb/nvim-lazyb#🧸
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"

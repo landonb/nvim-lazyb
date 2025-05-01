@@ -1,3 +1,7 @@
+-- vim:tw=0:ts=2:sw=2:et:ai:ft=lua
+-- Author: Landon Bouma <https://tallybark.com/>
+-- Project: https://github.com/landonb/nvim-lazyb#🧸
+
 -- Keymaps are automatically loaded on the VeryLazy event
 -- REFER: Default keymaps that are always set:
 --   https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua

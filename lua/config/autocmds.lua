@@ -1,3 +1,7 @@
+-- vim:tw=0:ts=2:sw=2:et:ai:ft=lua
+-- Author: Landon Bouma <https://tallybark.com/>
+-- Project: https://github.com/landonb/nvim-lazyb#🧸
+
 -- Autocmds are automatically loaded on the VeryLazy event
 --   ~/.local/share/nvim/lazy/LazyVim/lua/lazyvim/config/init.lua
 -- REFER: Default autocmds that are always set:
