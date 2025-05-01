@@ -115,10 +115,15 @@ return {
       -- Because I like being able to clear search highlights without leaving
       -- Insert mode, and I've used <Ctrl-h> as such since my beginnings with
       -- Vim, we'll keep the binding.
+      -- - We'll also add the same binding to <Alt-Escape>, which is otherwise
+      --   unused (it defaults to normal <Escape>). (Perhaps later we'll
+      --   reclaim <Ctrl-h> for a different purpose.)
       -- - SAVVY: To see Insert mode maps in which-key, press <Ctrl-r> to bring
       --   up the registers window, and then press <BS>.
       -- stylua: ignore
       { "<C-h>", function() vim.cmd.nohlsearch() end, desc = "Clear hlsearch", mode = "i" },
+      -- stylua: ignore
+      { "<M-Esc>", function() vim.cmd.nohlsearch() end, desc = "Clear hlsearch", mode = "i" },
       -- ALTLY:
       --   { "<C-h>", "<Cmd>nohlsearch<CR>", desc = "Clear hlsearch", mode = "i" },
       --   -- SAVVY: Note that <Cmd> is inherently silent, and works like this:
