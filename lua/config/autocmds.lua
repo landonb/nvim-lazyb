@@ -383,13 +383,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- MAYBE: When dragging/resizing the application window, this
--- avoids special buffers, like the Project window, quickfix,
--- etc., resizing equal in size to the other windows.
--- - REFER: Use |winfixwidth|/|winfixheight| to make special
---   windows play nice with |equalalways|.
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+-- ISOFF: Don't disable equalalways, which I demoed to that
+-- dragging/resizing the application window didn't also resize
+-- special buffer windows, like the Project window, quickfix,
+-- etc. But then it also doesn't resize normal windows.
+-- - REFER: Instead, use |winfixwidth|/|winfixheight| to make
+--   special windows play nice with |equalalways|.
 --
---   vim.o.equalalways = false
+--  vim.o.equalalways = false
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
