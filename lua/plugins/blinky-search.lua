@@ -104,20 +104,27 @@ return {
     end,
 
     keys = {
-      -- The plugin has a :nohlsearch map, which defaults <C-h>, but LazyVim
-      -- uses <C-h> for moving focus to the window on the left, and LazyVim
-      -- uses <Esc> to clear the search highlight (which is quite genius, if
-      -- not also quite obvious, in some respects!).
+      -- The plugin has a :nohlsearch map typically wired to <C-h>, but we'll
+      -- add it here directly, along with these comments.
+      -- - Note that LazyVim uses <C-h> for moving focus to the window on
+      --   the left. LazyVim instead extends <Esc> to also clear the search
+      --   highlight (which I find quite genius, if not also quite obvious,
+      --   in some respects! (Aka, now why didn't I think of that? =)).
       -- - Default Normal mode <C-h> is same as <Left>, <BS>, or |h|.
       -- - Default Insert mode <C-h> is same as <BS> (and deletes back a char).
-      -- I do like option to clear search highlights without leaving Insert mode...
+      -- Because I like being able to clear search highlights without leaving
+      -- Insert mode, and I've used <Ctrl-h> as such since my beginnings with
+      -- Vim, we'll keep the binding.
       -- - SAVVY: To see Insert mode maps in which-key, press <Ctrl-r> to bring
-      --   up registers window, then press <BS>.
-      { "<C-h>", "<Cmd>nohlsearch<CR>", desc = "Clear hlsearch", mode = "i" },
-      -- SAVVY: Note that <Cmd> is inherently silent, and works like this:
-      --   { "<C-h>", "<C-O>:nohlsearch<CR>", desc = "Clear", mode = "i", silent = true },
-      -- - Though I wonder if there are other nuanced differences between the two.
-      --   - In any case, the <Cmd> approach is less verbose (if you don't count this comment =).
+      --   up the registers window, and then press <BS>.
+      -- stylua: ignore
+      { "<C-h>", function() vim.cmd.nohlsearch() end, desc = "Clear hlsearch", mode = "i" },
+      -- ALTLY:
+      --   { "<C-h>", "<Cmd>nohlsearch<CR>", desc = "Clear hlsearch", mode = "i" },
+      --   -- SAVVY: Note that <Cmd> is inherently silent, and works like this:
+      --   --   { "<C-h>", "<C-O>:nohlsearch<CR>", desc = "Clear", mode = "i", silent = true },
+      --   -- - Though I wonder if there are other nuanced differences between the two.
+      --   -- - In any case, the <Cmd> approach is less verbose (if you don't count this comment =).
     },
   },
 }
