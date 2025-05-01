@@ -396,4 +396,19 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- Disable smartindent for specific file types.
+-- - USAGE: So that you can select and <Tab> to indent
+--   #-commented lines, which smartindent otherwise
+--   won't budge if the "#" comment leader is in the
+--   first column.
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = M.group,
+  pattern = { "conf" },
+  callback = function()
+    vim.opt.smartindent = false
+  end,
+})
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 return M
