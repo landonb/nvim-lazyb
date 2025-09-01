@@ -34,6 +34,9 @@ if vim.g.neovide then
   if false then
     vim.g.neovide_scroll_animation_length = 0
   end
+
+  -- CXREF: Set some config via Neovide config file, incl. fonts, cursor, etc.:
+  --   ~/.config/neovide/config.toml
 end
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
