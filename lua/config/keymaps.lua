@@ -623,6 +623,8 @@ wk.add({
     { mode = { "n", "i", "v" }, "<localleader>S", group = "Substitute Commands" },
     { mode = { "n", "i" }, "<localleader>SS", desc = "Sub. Word Under Cursor (#-delims)" },
     { mode = "v", "<localleader>SS", desc = "Substitute Selected Word (#-delims)" },
+    { mode = "n", "<localleader>S4", desc = "Start Substitute to Scrub PS4 prompts" },
+    { mode = "n", "<localleader>S$", desc = "Start Substitute to Scrub PS4 prompts" },
     -- ISOFF/2025-03-04: The inccommand-enabled s/ub/stitute/ maps don't play well.
     --  { mode = { "n", "v" }, "<localleader>Ss", desc = "Sub. Word (live inccommand)" },
     --  { mode = { "n", "i", "v" }, "<localleader>S#", desc = "Sub. Word (#-delims, live inccommand)" },
