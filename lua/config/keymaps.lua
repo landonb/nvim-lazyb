@@ -109,6 +109,9 @@ map({ "n", "i" }, "<F9>", function()
     vim.cmd([[luafile %]])
     M.clearRequirePackageCache()
   elseif ext == "vim" then
+    -- SAVVY: If `source` fails, look at the lines above "stack traceback:"
+    -- and not below it. (The stack trace itself shows just the file:line
+    -- of the next line, and not the `source` error.)
     vim.cmd([[exec "source " .. bufname("%")]])
     local bufname = vim.api.nvim_buf_get_name(0)
     print("Reloaded “" .. vim.fs.basename(bufname) .. "”")
