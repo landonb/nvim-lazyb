@@ -35,6 +35,20 @@ return {
     build = require("util").lazy_build_fork("noice.nvim", "main"),
 
     opts = {
+      -- ALERT/2025-09-09: Noice inhibits ! output.
+      -- - E.g., !ls shows just the "!ls" line but nothing more.
+      -- - KLUGE: One option: Disable the messages popup by
+      --   adding this config herein:
+      --     messages = {
+      --       enabled = false,
+      --     },
+      -- - ALTLY: 2nd option: Just :NoiceDisable and :NoiceEnable
+      --   manually when you want to run commands and see output.
+      -- - ALTLY: 3rd option: Use `print()` or `I` to run-and-dump
+      --   a Lua call, e.g.,
+      --     lua print(vim.fn.system([[ls]]))
+      --     I vim.fn.system([[echo do something]])
+      --   - Though note that `I` does not expand newlines.
       routes = {
         {
           filter = {
