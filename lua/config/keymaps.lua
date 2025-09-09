@@ -228,6 +228,28 @@ end, { desc = "Transpose Characters", noremap = true, silent = true })
 -- - Though note we're not adding transpose-words.
 --   - MAYBE: If we did, <C-S-T> is also available.
 
+-- LOPRI/FIXME/2025-09-09: If not using meta keys (i.e., using
+-- macOS Option keys instead), the lookup("t") will error
+-- ("ERROR: Unusable or unmapped ...") because <Opt-t> is
+-- not usable.
+-- - LOPRI: Author runs with Alt/Meta enabled, so not an issue
+--   for me.
+--   - Also, it's just a single error message, and one missing
+--     command (though if I saw that error every time I started
+--     Neovim, I'd be annoyed and would do something about it).
+-- - MAYBE: Some ideas:
+--   - Add a fallback arg, e.g.,
+--       alt_keys.lookup("t", "%")
+--     Or silently fail if fallback is nil, e.g.,
+--       alt_keys.lookup("t", nil)
+--   - Another idea: Wrap the map() here and inhibit any error.
+--     - Though it'd be nice to relocate the Transpose binding
+--       rather than to just not have one.
+-- - See related:
+--   - FTREQ: When logged on `nvim` in Alacritty, check
+--     Alacritty config to determine if Option or Alt/Meta.
+--     - CXREF: M.IsUsingMetaKeys()
+
 map({ "i" }, alt_keys.lookup("t"), function()
   require("util.edit-juice.transpose").transpose_characters()
 end, { desc = alt_keys.AltKeyDesc("Transpose Characters", "<M-t>"), noremap = true, silent = true })
