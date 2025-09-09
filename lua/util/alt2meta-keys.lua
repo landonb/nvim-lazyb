@@ -9,6 +9,10 @@ local M = {}
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- REFER/2025-09-09: Related project, with both 'en-US' and 'en-GB'
+-- lookups (brilliant idea!):
+--   https://github.com/clvnkhr/macaltkey.nvim/blob/master/lua/macaltkey/dicts.lua
+
 -- REFER/2025-03-03: Meta binding characters.
 -- - From docs, |<T-| bindings are "meta-key when it's not alt",
 --   but they don't work for me. Use the literal character that
