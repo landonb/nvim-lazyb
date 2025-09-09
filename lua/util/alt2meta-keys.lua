@@ -133,7 +133,15 @@ function M.lookup(char)
   if M.IsUsingMetaKeys() then
     return "<M-" .. char .. ">"
   else
-    return M.alt_keys[char]
+    local alt_key = M.alt_keys[char]
+
+    if alt_key then
+      return alt_key
+    else
+      print("ERROR: Unusable or unmapped Alt-key for char: " .. char)
+
+      return ""
+    end
   end
 end
 
