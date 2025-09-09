@@ -469,16 +469,42 @@ return {
   --     lazy = true,
   --   },
 
-  -- LATER: Run without this and see if you need it.
+  -- This plugin ensures that files opened from netrw are opened
+  -- using their canonical path, and not, e.g., a symlink name.
+  -- - UCASE: Sometimes when you open the same file using two
+  --   different paths (i.e., 1 or both a symlink), (Neo)vim
+  --   opens two buffers but then won't let you write without
+  --   banging (i.e., :w!).
+  -- - UCASE: Author has directory of symlinks to commonly-
+  --   opened text files, and I use a lot of flair and emoji
+  --   in the symlink filenames that looks gross when shown
+  --   in the titlebar.
+  -- - DUNNO: I made this plugin lazy to test behavior without
+  --   it, e.g.,
+  --     lazy = true,
+  --   but found different behavior on macOS vs. Linux!:
+  --   - On macOS, this script still gets loaded (and
+  --     files are opened at their canonical path, and
+  --     the titlebar looks pleasant).
+  --   - But on Debian, this script is *not* loaded (which
+  --     is the expected behavior, because lazy = true)
+  --     (and paths are not resolved, so titlebar shows
+  --     symlink names, and you might have to :w! save).
+  --   - AFAIK, the 2 OS environments are nearly identical.
+  --     But there could be a disconnect between the two
+  --     causing this (and I'd assume it's more likely
+  --     there's an issue with my user environment and
+  --     neovim config than there is something different
+  --     between nvim or neovide between the two OSes).
+  --
   -- - ATEST: Interestingly, I opened this project's .gitignore
   --   file, and nvim opened the symlink target, .git/info/exclude.
   --   I then opened the target of .git/info/exclude,
   --     ~/.depoxy/ambers/home/.kit/nvim/landonb/nvim-lazyb/_git/info/exclude
   --   and nvim focused the .git/info/exclude buffer.
   --   - The point of this plugin is to use the canonical (realpath)
-  --     path for the buffer, to avoid swapfile warnings/issues.
-  --     ... but I bet either Neovim or LazyVim is smart enough
-  --     to avoid this problem.
+  --     path for the buffer, to avoid swapfile warnings/issues,
+  --     or having multiple buffers for the same canonical file.
   --   - Note this plugin only affects files opened from netrw,
   --     which means would only matter to files opened from \p/\P
   --     maps (vim-netrw-explore-map).
@@ -489,7 +515,7 @@ return {
   --   BufEnter (e.g., <Ctrl-^> once <Ctrl-^> twice).
   {
     dir = "~/.kit/nvim/landonb/vim-netrw-link-resolve",
-    lazy = true,
+    event = "VeryLazy",
   },
 
   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
