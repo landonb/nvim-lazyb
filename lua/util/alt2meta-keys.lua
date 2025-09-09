@@ -167,11 +167,17 @@ end
 --   how <Alt> keypresses work on Linux (and prob. Windows  ¯\_(ツ)_/¯).
 
 function M.IsUsingMetaKeys()
-  return vim.g.neovide
-    and (
+  -- stylua: ignore
+  return (
+    -- Using Meta keys (or (Apple) Option keys) if:
+    -- - Not on macOS
+    (vim.fn.has("macunix") == 0) or
+    -- - On macOS, running Neovide, and enabled on left or both
+    vim.g.neovide and (
       vim.g.neovide_input_macos_option_key_is_meta == "both"
       or vim.g.neovide_input_macos_option_key_is_meta == "only_left"
     )
+  )
 end
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
