@@ -195,7 +195,7 @@ end
 -- that checks if user running nvim over an SSH session by checking
 -- local environs and the command names of parent processes.
 -- - Project: https://github.com/DepoXy/sh-humble-prompt#🙇
---   _hf_prompt_is_user_logged_on_via_ssh()
+--   _humb_prompt_is_user_logged_on_via_ssh()
 -- - CXREF: If you're running DepoXy, it's at:
 --   ~/.kit/sh/sh-humble-prompt/lib/set-shell-prompt-and-window-title.sh
 --
