@@ -166,10 +166,21 @@ end
 -- - Here we check if user has enabled meta output instead, which is
 --   how <Alt> keypresses work on Linux (and prob. Windows  ¯\_(ツ)_/¯).
 
+-- Cached flag indicates if user logged on via SSH, which would mean
+-- they're not using Option keys (AFAIK (author), that's not possible),
+-- and that we can use Alt/Meta bindings.
+M.is_user_logged_on_via_ssh = nil
+
 function M.IsUsingMetaKeys()
+  if M.is_user_logged_on_via_ssh == nil then
+    M.is_user_logged_on_via_ssh = M.IsUserLoggedOnViaSSH()
+  end
+
   -- stylua: ignore
   return (
     -- Using Meta keys (or (Apple) Option keys) if:
+    -- - Logged on via SSH
+    M.is_user_logged_on_via_ssh or
     -- - Not on macOS
     (vim.fn.has("macunix") == 0) or
     -- - On macOS, running Neovide, and enabled on left or both
@@ -178,6 +189,104 @@ function M.IsUsingMetaKeys()
       or vim.g.neovide_input_macos_option_key_is_meta == "only_left"
     )
   )
+end
+
+-- COPYD/2025-09-09: The following fcn. is converted from a shell func.
+-- that checks if user running nvim over an SSH session by checking
+-- local environs and the command names of parent processes.
+-- - Project: https://github.com/DepoXy/sh-humble-prompt#🙇
+--   _hf_prompt_is_user_logged_on_via_ssh()
+-- - CXREF: If you're running DepoXy, it's at:
+--   ~/.kit/sh/sh-humble-prompt/lib/set-shell-prompt-and-window-title.sh
+--
+-- THANX: https://unix.stackexchange.com/questions/9605/how-can-i-detect-if-the-shell-is-controlled-from-ssh
+-- - "If one of the variables SSH_CLIENT or SSH_TTY is defined, it's an ssh session.
+--    If the login shell's parent process name is sshd, it's an ssh session."
+
+-- REFER: See lots of notes about accessing $$, $PPID, $gpid, $gppid, etc.:
+-- ~/.kit/nvim/DepoXy/start/vim-depoxy/after/plugin/vim_minimal_sometimes.vim
+--
+-- - Note the different fcn. syntax:
+--   - Send list of args:
+--     local command_name = vim.fn.system { "ps", "-o", ... }
+--   - Send single string:
+--     local command_name = vim.fn.system([[ps -o ...]])
+--
+-- - REFER: See also:
+--     |vim.system()| — use instead of |jobstart()|
+--                      can be run (a)synchronously
+--     |job-control| — for multitasking/non-blocking
+--
+--   - DEBAR/2025-09-09: I considered replacing all vim.fn.system() usage w/
+--     vim.system(), but I don't see a clear benefit. What I do see is a more
+--     convoluted call.
+--     - E.g., using vim.fn.system:
+--         local pid = vim.fn.system([[echo "$$"]])
+--     - Vs. using vim.system:
+--         local pid = vim.system({ "bash", "-c", [[echo $$]] }, { text = true }):wait().stdout
+--     - Note these alt. approaches don't work:
+--         -- Prints only "\n"
+--         vim.fn.system("echo", "$$")
+--         -- Prints literal "$$\n"
+--         vim.fn.system { "echo", "$$" }
+--         vim.system({ "echo", "$$" }, { text = true }):wait().stdout
+--         -- Errors
+--         vim.system({ "echo \"$$\"" }, { text = true }):wait().stdout
+--
+-- - SAVVY: Neovim runs this command in a new process, so
+--   (obviously) its process ID is ephemeral, and its name
+--   is the shell, e.g., "bash".
+--     local pid = vim.fn.system([[echo "$$"]])
+--     local pid_name = vim.fn.system([[ps -o comm= -p $$ | sed 's/:.*$//']])
+
+-- SAVVY: This fcn. checks if user logged on via SSH.
+-- - Easiest check is if SSH_CLIENT or SSH_TTY nonempty.
+-- - Fallback check is matching sshd against 3 ancestor processes.
+--   - FOREX: Some examples:
+--     - gpid, ggpid, and gggpid, respectively, from Neovide on local Deb:
+--         neovide -- --listen /tmp/nvim.socket-🧸
+--         /lib/systemd/systemd --user
+--         /sbin/init splash
+--     - gpid, ggpid, and gggpid, respectively, from nvim on SSH macOS
+--         nvim
+--         -bash
+--         sshd-session: user@ttys012
+--       - Or gggpid on nvim SSH Linux:
+--         sshd: user@pts/3
+--   - SAVVY: We'll regex for "^sshd:" followed by ":",
+--     albeit author submits, I don't know if all SSHd
+--     process commands are thusly named.
+--
+-- CPYST:
+-- - Print gpid, ggpid, and gggpid commands:
+--   lua print(vim.fn.system([[gpid="$(ps -o ppid= -p ${PPID} | tr -d " ")";ggpid="$(ps -o ppid= -p ${gpid} | tr -d " ")";gggpid="$(ps -o ppid= -p ${ggpid} | tr -d " ")";(ps -o command= -p ${gpid};ps -o command= -p ${ggpid};ps -o command= -p ${gggpid};)]]))
+-- - Filter gpid, ggpid, and gggpid sshd commands:
+--   lua print(vim.fn.system([[gpid="$(ps -o ppid= -p ${PPID} | tr -d " ")";ggpid="$(ps -o ppid= -p ${gpid} | tr -d " ")";gggpid="$(ps -o ppid= -p ${ggpid} | tr -d " ")";(ps -o command= -p ${gpid};ps -o command= -p ${ggpid};ps -o command= -p ${gggpid};) | grep -e "^sshd\(\-session\)\?: .*$";]]))
+
+function M.IsUserLoggedOnViaSSH()
+  if
+    (vim.env.SSH_CLIENT and vim.env.SSH_CLIENT ~= "")
+    or (vim.env.SSH_TTY and vim.env.SSH_TTY ~= "")
+  then
+    return true
+  else
+    -- DUNNO/2024-10-28: Not sure this branch is ever followed.
+    -- - I'd expect that SSH_CLIENT/SSH_TTY always set by sshd.
+    vim.fn.system([[
+      gpid="$(ps -o ppid= -p ${PPID} | tr -d " ")";
+      ggpid="$(ps -o ppid= -p ${gpid} | tr -d " ")";
+      gggpid="$(ps -o ppid= -p ${ggpid} | tr -d " ")";
+      (ps -o command= -p ${gpid};
+       ps -o command= -p ${ggpid};
+       ps -o command= -p ${gggpid};
+      ) | grep -q -e "^sshd\(\-session\)\?: .*";]])
+
+    if vim.v.shell_error == 0 then
+      return true
+    end
+
+    return false
+  end
 end
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
