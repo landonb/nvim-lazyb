@@ -537,14 +537,15 @@ return {
       --   let g:vim_webopen_mru_profile = 1
       vim.g.vim_webopen_maps = {
         open = {
-          nmap = { "<LocalLeader>T", "gW" },
-          imap = "<LocalLeader>T",
-          vmap = "<LocalLeader>T",
+          nmap = { "<LocalLeader>U", "gW" },
+          imap = "<LocalLeader>U",
+          vmap = "<LocalLeader>U",
         },
         define = "<LocalLeader>D",
         search = "<LocalLeader>W",
         incognito = { nmap = "g!" },
         github = "<LocalLeader>og",
+        thesaurus = "<LocalLeader>T",
       }
       -- CXREF:
       -- ~/.kit/nvim/embrace-vim/start/vim-webopen/autoload/embrace/webopen.vim
@@ -553,12 +554,13 @@ return {
       wk.add({
         mode = { "n", "i", "v" },
         icon = "󰖟",
-        { "<LocalLeader>T" },
+        { "<LocalLeader>U" },
         { mode = { "n" }, "gW" },
         { "<LocalLeader>D" },
         { "<LocalLeader>W" },
         { mode = { "n" }, "g!" },
         { "<LocalLeader>og" },
+        { "<LocalLeader>T" },
       })
     end,
   },
