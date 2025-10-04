@@ -272,6 +272,21 @@ function M.project_aware_explorer_toggle(cwd, handle_picker_showing)
       hidden = true,
       ignored = true,
       exclude = { ".DS_Store" },
+      -- SAVVY: Don't show diags alerts.
+      -- - UCASE: In general, the yellow warning triangles are just noise,
+      --   especially for third-party projects whose code you're looking at.
+      --   - E.g., Hugo content uses *.md files, but they include Go templates,
+      --     which don't conform, and then every Markdown file in the explorer
+      --     window is marked with a ("meaningless" †) yellow warning triangle.
+      --     - († Meaningless, or perhaps "false-positive".)
+      -- - SAVVY: Changing this value requires restart (<F9> didn't work...
+      --   but maybe lazy-reload would work).
+      -- - FTREQ: Add Snacks toggle-diagnostics cmd ('?' help doesn't show one).
+      -- MAYBE: Make diagnostics user-configurable; or maybe key off some
+      -- metavalue in the project itself.
+      -- - UCASE: Perhaps you've got a project that's completely conformant,
+      --   and the diagnostics results are meaningful and should be alerted.
+      diagnostics = false,
     })
 
     -- MAYBE: Maybe don't toggle back on...
