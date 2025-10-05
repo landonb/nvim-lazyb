@@ -10,7 +10,7 @@
 return {
   -- auto pairs
   {
-    "echasnovski/mini.pairs",
+    "nvim-mini/mini.pairs",
     opts = {
       -- Disable command line autopairing (which LazyVim enables).
       modes = { insert = true, command = false, terminal = false },

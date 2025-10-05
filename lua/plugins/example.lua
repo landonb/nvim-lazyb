@@ -160,7 +160,7 @@ return {
   --   },
 
   {
-    "echasnovski/mini.surround",
+    "nvim-mini/mini.surround",
     -- SPOKE/2025-02-28: Print out list of surround bindings.
     -- opts = function(_, opts)
     --   print("surround: " .. vim.inspect(opts))
