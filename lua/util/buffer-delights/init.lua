@@ -37,7 +37,17 @@ function M.close_floats_or_delete_buffer()
     vim.api.nvim_win_close(window_id, force)
   else
     -- Not quite the same as closing a window...
-    vim.cmd("silent! Bdelete")
+    local winbuf = vim.api.nvim_win_get_buf(window_id)
+    if vim.bo[winbuf].bufhidden == "wipe" and vim.bo[winbuf].modified then
+      -- Beware :Bdelete errors, e.g., if you create a new buffer
+      -- and change it, but "wipe" enabled, then try to close it:
+      --   E89: No write since last change for buffer 1234 (add ! to override)
+      -- - But because the silent!, user actually sees nothing.
+      -- - INERT/2025-10-07: Should we use Noice error popup?
+      print("Ope! Cannot close modified bufhidden buffer")
+    else
+      vim.cmd("silent! Bdelete")
+    end
   end
 end
 
