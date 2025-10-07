@@ -103,8 +103,6 @@ return {
       -- }
 
       opts.highlight.disable = { "rst" }
-      -- Setting this to true or a list of languages will run `:h syntax` and tree-sitter at the same time.
-      opts.highlight.additional_vim_regex_highlighting = { "rst" }
 
       -- print("opts.highlight: " .. vim.inspect(opts.highlight))
 
