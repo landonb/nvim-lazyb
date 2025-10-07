@@ -173,6 +173,47 @@ opt.wrap = true
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- *** Configure your GUI's font.
+
+-- For a Neovim GUI, you'll want to set |guifont| — or your editor's
+-- equivalent config value.
+--
+-- - For instance, you can set the Neovide font via its config,
+--   including an italic alternative: ~/.config/neovide/config.toml
+--   - REFER: https://neovide.dev/configuration.html#font
+--   (You can also just set |guifont| and skip that config.)
+--
+-- - TSHŌT: Here's a Neovide troubleshooting hint for emoji on Debian:
+--   - If emoji rendering is wonky, e.g., if it works for some
+--     characters, but lots of character are black & white (the
+--     VS15 variants), you might need to set a fallback font.
+--   - Author had that issue, even though I'm using a Nerd Font
+--     (and my understanding is that Nerd Font is an almagation
+--      of multiple fonts, including an emoji font).
+--     - Oddly, if I fiddled with guifont, e.g, if I ran the
+--       following 4 commands, colorful emoji would suddenly
+--       appear:
+--         vim.opt.guifont = "Hack Nerd Font Mono"
+--         vim.opt.guifont = "Hack Nerd Font"
+--         vim.opt.guifont = "Hack"
+--         vim.opt.guifont = "Hack Nerd Font Mono"
+--       Which is... strange.
+--     - Note, too, that I don't have a similar issue on
+--       Neovide macOS; using just Hack works fine.
+--
+--   - REFER: To fix, so all emoji are colorful, use a fallback font.
+--     - I added Joy Pixels, which you can download from here:
+--         https://joypixels.com/download
+--     - And please let me know if you find other fonts that work!
+--       (Joy Pixels is fine, but it's not open source, and the
+--        latest download is currently (2025) from 2021.)
+--
+--     - Specifically, add this setting to your options-client.lua:
+--
+--         vim.opt.guifont = "Hack Nerd Font,JoyPixels:h12:#e-subpixelantialias:#h-none"
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 -- CXREF: Optional user config:
 -- ~/.config/nvim_lazyb/lua/config/options-client.lua
 pcall(function()
