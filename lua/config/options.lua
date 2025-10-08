@@ -14,6 +14,8 @@
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- REFER:
+-- https://neovide.dev/configuration.html
 if vim.g.neovide then
   -- FTREQ/2025-02-25: Add macOS literal Option character maps.
   vim.g.neovide_input_macos_option_key_is_meta = "both"
