@@ -861,7 +861,7 @@ function M.setup()
 
   -- REFER: Note that Neovide suggests some paste maps, but they're
   -- unsatisfactory for me.
-  -- - CXREF: ~/.kit/rust/neovide/website/docs/faq.md @ 5
+  -- - CXREF: ~/.kit/nvim/neovide/website/docs/faq.md @ 5
   -- - COPYD: From faq.md; comments are mine except for the one noted.
   --
   --   if vim.g.neovide then

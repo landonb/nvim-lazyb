@@ -1181,7 +1181,7 @@ end, { desc = "Quit All", noremap = true })
 
 -- SAVVY: Neovide adds a single keymap, <Cmd-Q> quit. In all the modes.
 -- - CXREF: *Quit when Command+Q is pressed on macOS*
---   ~/.kit/rust/neovide/lua/init.lua @ 43
+--   ~/.kit/nvim/neovide/lua/init.lua @ 43
 --   - DUNNO: Neovide doesn't `== 1`, but 0 is truthy. IDGI.
 --     - E.g., run this — :lua if 0 then print("0!") end
 --     - FIXME- Test Debian behavior.
