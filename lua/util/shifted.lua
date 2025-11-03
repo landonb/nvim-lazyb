@@ -376,12 +376,14 @@ map(
   "&wrap == 1 ? '<C-O><Esc>gk' : '<C-O><Esc>k'",
   { desc = "Stop Selection & Up", expr = true, silent = true }
 )
+-- stylua: ignore
 map(
   { "s" },
   "<Home>",
   "&wrap == 1 ? '<C-O><Esc>g0' : '<C-O><Esc>0'",
   { desc = "Home", expr = true, silent = true }
 )
+-- stylua: ignore
 map(
   { "s" },
   "<End>",
@@ -389,6 +391,7 @@ map(
   { desc = "End", expr = true, silent = true }
 )
 
+-- stylua: ignore
 map(
   { "s" },
   "<PageDown>",
@@ -400,6 +403,7 @@ map(
 -- - USAGE: Try <Shift-Ctrl-PageUp> or <Shift-Ctrl-Home> instead.
 -- INERT: Try to fix this.
 -- - E.g., if first line visible, select to buffer start.
+-- stylua: ignore
 map(
   { "s" },
   "<PageUp>",
