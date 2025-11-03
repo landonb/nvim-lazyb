@@ -337,10 +337,15 @@ end, {
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 map({ "i" }, "<LeftMouse>", function()
-  require("blink.cmp").hide()
-  vim.defer_fn(function()
+  -- Avoid exhibiting error if blink not found.
+  -- - UCASE: EDITOR=editor-vim-0-0-insert-minimal
+  local success = pcall(require, "blink.cmp")
+  if success then
     require("blink.cmp").hide()
-  end, 200)
+    vim.defer_fn(function()
+      require("blink.cmp").hide()
+    end, 200)
+  end
   return "<LeftMouse>"
 end, {
   expr = true,
