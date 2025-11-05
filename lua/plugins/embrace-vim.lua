@@ -534,6 +534,19 @@ return {
       -- not 'Default', set g:vim_webopen_mru_profile nonzero:
       --
       --   let g:vim_webopen_mru_profile = 1
+      --
+      -- INERT: Maybe someday I'll convert vim-webopen to a true
+      -- Neovim Lua plugin, e.g., webopen.nvim, and then we could
+      -- use lazy.nvim 'keys', e.g., something like this:
+      --   keys = {
+      --     { "<LocalLeader>D",
+      --       mode = { "n", "i", "v" },
+      --       function() require("webopen").googleDefine() end,
+      --       desc = "Google Define Selected Text", },
+      --     ...
+      --   },
+      -- - But it works well currently, despite this hacky-looking
+      --   Lua config!
       vim.g.vim_webopen_maps = {
         open = {
           nmap = { "<LocalLeader>U", "gW" },
