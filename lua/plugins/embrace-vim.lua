@@ -530,9 +530,8 @@ return {
       --
       --   let g:vim_webopen_use_tab = 1
       --
-      --
-      -- If you'd like Chrome to use most recent user profile, and not 'Default',
-      -- set g:vim_webopen_mru_profile nonzero:
+      -- If you'd like Chrome to use most recent user profile, and
+      -- not 'Default', set g:vim_webopen_mru_profile nonzero:
       --
       --   let g:vim_webopen_mru_profile = 1
       vim.g.vim_webopen_maps = {
