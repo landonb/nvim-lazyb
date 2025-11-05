@@ -413,4 +413,36 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+-- Remove colon from indentkeys in Ansible Yaml files, so that
+-- typing a comment from the first column, they typing a colon,
+-- does not trigger an indent (e.g., when you're trying to add
+-- a comment above a new Yaml list, but the indenter thinks the
+-- comment is part of a list above it).
+-- - Defaults:
+--     indentkeys=!^F,o,O,0},0],<:>,0-
+-- - CALSO: We could instead clear indentexpr, set by
+--   LazyVim to:
+--     indentexpr=v:lua.LazyVim.treesitter.indentexpr()
+-- WORKS/ALTLY: Each of these would also work:
+--   vim.bo.indentexpr = ""
+--   vim.opt_local.indentkeys:remove("<:>")
+--   -- Or use Vimscript approach:
+--   vim.cmd("setlocal indentkeys-=<:>")
+-- WRONG: None of these work, for various reasons:
+--   -- No such method [contrary to LLM lies]:
+--   vim.bo.indentkeys:remove({ ":" })
+--   -- Doesn't remove the colon:
+--   vim.opt_local.indentkeys:remove({ ":" })
+--   -- Doesn't change behavior:
+--   vim.opt.smartindent = false
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = M.group,
+  pattern = { "yaml.ansible" },
+  callback = function()
+    vim.opt_local.indentkeys:remove({ "<:>" })
+  end,
+})
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 return M
