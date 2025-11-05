@@ -405,7 +405,9 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   group = M.group,
   pattern = { "conf" },
   callback = function()
-    vim.opt.smartindent = false
+    -- Inherently local, so this works, too:
+    --   vim.opt.smartindent = false
+    vim.opt_local.smartindent = false
   end,
 })
 
