@@ -66,6 +66,7 @@ return {
         { "<C-S-Down>", "<cmd>:TmuxNavigateNext<CR>", desc = "Go to Next Window" },
 
         -- Sorta related: Tabpage navigation.
+        -- - CALSO: `gt` and `gT` also navigate between tab pages.
         { "<M-S-Down>", "<cmd>:tabn<CR>", desc = "Go to Next Tab Page" },
         { "<M-S-Up>", "<cmd>:tabN<CR>", desc = "Go to Prev Tab Page" },
 
