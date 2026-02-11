@@ -21,7 +21,7 @@ return {
   -- REFER: Install on Linux via OMR:
   --   mr -d ~/.kit/go/fzf install
   -- ~/.depoxy/ambers/home/.kit/go/_mrconfig
-  -- - On macOS, install via Homebrew (see macOS-onboarder).
+  -- - On macOS, install via Homebrew (see macOS-GNOME-onboarder).
 
   -- USAGE:
   --   <LocalLeader>F — FZF (fzf.vim) user home
